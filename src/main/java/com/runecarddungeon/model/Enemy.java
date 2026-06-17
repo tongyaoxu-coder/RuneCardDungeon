@@ -1,14 +1,15 @@
-package model;
+package com.runecarddungeon.model;
 
-public class Enemy {
-
-    private int hp = 20;
-
-    public int getHp() {
-        return hp;
-    }
-
-    public void takeDamage(int damage) {
-        hp -= damage;
-    }
+public abstract class Enemy extends Actor {
+	private String currIntent;
+	
+	public Enemy(String name, int maxHp) {
+		super(name, maxHp);
+	}
+	
+	public abstract void rollIntent();
+	public abstract void takeTurn(Player target);
+	public String getCurrentIntent() {return currIntent;}
+	public void setCurrIntent(String intent) {this.currIntent=intent;}
+   
 }
