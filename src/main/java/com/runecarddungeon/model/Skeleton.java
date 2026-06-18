@@ -30,7 +30,7 @@ public class Skeleton extends Enemy {
 		}else if(nextTurn==1) {
 			this.setCurrIntent("Strike: hit "+ attackPower);
 		}else {
-			this.setCurrIntent("Bone block: block 8");
+			this.setCurrIntent("Bone Shield: block 8");
 		}
 	}
 	
