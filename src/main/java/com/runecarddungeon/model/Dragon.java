@@ -40,7 +40,7 @@ public class Dragon extends Enemy{
 		case 2:
 			this.setCurrIntent("Warning: The dragon is charging up...");//charging
 		case 3:
-			this.setCurrIntent("Danger: Cataclysmic Breath 28!");
+			this.setCurrIntent("Danger: Cataclysmic Breath 30!");
 			break;
 		}
 	}
