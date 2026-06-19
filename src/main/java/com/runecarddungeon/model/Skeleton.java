@@ -6,7 +6,7 @@ public class Skeleton extends Enemy {
 	private final int shieldAmount=8;
 	
 	public Skeleton() {
-		super("Skeleton",60, 10);
+		super("Scare Skeleton",60, 10);
 		rollIntent();
 	}
 	

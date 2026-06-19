@@ -5,7 +5,7 @@ public class Dragon extends Enemy{
 	private int turnCount =0;
 
 	public Dragon() {
-		super("Red dragon: Lavarax", 130);
+		super("Red dragon: Lavarax", 130, 20);
 		rollIntent();
 	}
 	
@@ -13,15 +13,15 @@ public class Dragon extends Enemy{
 	public void takeTurn(Player target) {
 		switch(turnCount) {
 		case 0:
-			this.addBlock(10);
+			this.gainBlock(10);
 			break;
 		case 1:
-			target.takeDamage(15);
+			this.attack(target);
 			break;
 		case 2:
 			break;//charging
 		case 3:
-			target.takeDamage(30);
+			target.takeDamage(this.getAttackDamage()*2);
 			break;
 		}
 		turnCount= (turnCount+1)%4;
@@ -35,12 +35,13 @@ public class Dragon extends Enemy{
 			this.setCurrIntent("Dragon Aura: Shield 10");
 			break;
 		case 1:
-			this.setCurrIntent("Rend: Damage 15");
+			this.setCurrIntent("Rend: Damage "+this.getAttackDamage());
 			break;
 		case 2:
 			this.setCurrIntent("Warning: The dragon is charging up...");//charging
+			break;
 		case 3:
-			this.setCurrIntent("Danger: Cataclysmic Breath 30!");
+			this.setCurrIntent("Danger: Cataclysmic Breath " +(this.getAttackDamage()*2)+ "!");
 			break;
 		}
 	}
