@@ -2,9 +2,22 @@ package com.runecarddungeon.model;
 
 public abstract class Enemy extends Actor {
 	private String currIntent;
+	private int attackDamage;
 	
-	public Enemy(String name, int maxHp) {
+	public Enemy(String name, int maxHp, int attackDamage) {
 		super(name, maxHp);
+		this.attackDamage=attackDamage;
+		
+	}
+	
+	public int getAttackDamage() {
+		return this.attackDamage;
+	}
+	
+	public void attack(Player player) {
+		if(player!=null) {
+			player.takeDamage(this.attackDamage);
+		}
 	}
 	
 	public abstract void rollIntent();

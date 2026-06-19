@@ -37,7 +37,7 @@ public class Card {
             return false;
         }
 
-        if (!player.useEnergy(energyCost)) {
+        if (!player.spendEnergy(energyCost)) {
             return false;
         }
 

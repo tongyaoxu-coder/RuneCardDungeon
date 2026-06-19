@@ -3,9 +3,10 @@ package com.runecarddungeon.model;
 public class Skeleton extends Enemy {
 	private int turnCount =0;
 	private int attackPower = 10;
+	private final int shieldAmount=8;
 	
 	public Skeleton() {
-		super("Skeleton", 60);
+		super("Skeleton",60, 10);
 		rollIntent();
 	}
 	
@@ -15,9 +16,9 @@ public class Skeleton extends Enemy {
 		if(turnCount%3==0) {// 3 behaviors
 			this.attackPower+=4;
 		}else if(turnCount%3==1) {
-			target.takeDamage(attackPower);//strike
+			target.takeDamage(this.attackPower);//strike
 		}else {
-			this.addBlock(8);
+			this.gainBlock(this.shieldAmount);
 		}
 		rollIntent();
 	}
@@ -28,9 +29,9 @@ public class Skeleton extends Enemy {
 		if(nextTurn==0) {
 			this.setCurrIntent("Enraged: Attack +4");
 		}else if(nextTurn==1) {
-			this.setCurrIntent("Strike: hit "+ attackPower);
+			this.setCurrIntent("Strike: hit "+ this.attackPower);
 		}else {
-			this.setCurrIntent("Bone Shield: block 8");
+			this.setCurrIntent("Bone Shield: block "+this.shieldAmount);
 		}
 	}
 	

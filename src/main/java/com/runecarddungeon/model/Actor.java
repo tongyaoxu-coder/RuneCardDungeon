@@ -25,12 +25,20 @@ public abstract class Actor{//base class
 	}
 	
 	//Block accumulate logic
-	public void addBlock(int amount) {
+	public void gainBlock(int amount) {
 		this.block+=amount;
 	}
 	
-	public void resetBlock() {
+	public void cleanBlock() {
 		this.block=0;
+	}
+	
+	public void heal(int amount) {
+		this.hp=Math.min(maxHp, this.hp+amount);
+	}
+	
+	public boolean isAlive() {
+		return this.hp>0;
 	}
 	
 	public String getName() {return name;}
