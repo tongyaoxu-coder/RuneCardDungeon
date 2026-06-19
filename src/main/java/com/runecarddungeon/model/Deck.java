@@ -5,7 +5,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class Deck {
-    private List<Card> cards;
+
+    private final List<Card> cards;
 
     public Deck() {
         this.cards = new ArrayList<>();
@@ -13,13 +14,17 @@ public class Deck {
 
     public void addCard(Card card) {
         if (card != null) {
-            this.cards.add(card);
+            cards.add(card);
         }
     }
 
-    public void addCards(List<Card> cards) {
-        if (cards != null) {
-            this.cards.addAll(cards);
+    public void addCards(List<Card> newCards) {
+        if (newCards == null) {
+            return;
+        }
+
+        for (Card card : newCards) {
+            addCard(card);
         }
     }
 
@@ -27,6 +32,7 @@ public class Deck {
         if (cards.isEmpty()) {
             return null;
         }
+
         return cards.remove(0);
     }
 
@@ -35,35 +41,42 @@ public class Deck {
 
         for (int i = 0; i < amount; i++) {
             Card card = drawCard();
-            if (card != null) {
-                drawnCards.add(card);
+
+            if (card == null) {
+                break;
             }
+
+            drawnCards.add(card);
         }
 
         return drawnCards;
     }
 
-    public void removeCard(Card card) {
-        cards.remove(card);
+    public boolean removeCard(Card card) {
+        return cards.remove(card);
+    }
+
+    public boolean contains(Card card) {
+        return cards.contains(card);
+    }
+
+    public void shuffle() {
+        Collections.shuffle(cards);
+    }
+
+    public int getRemainingCount() {
+        return cards.size();
     }
 
     public boolean isEmpty() {
         return cards.isEmpty();
     }
 
-    public void shuffle() {
-        Collections.shuffle(this.cards);
-    }
-
-    public int getRemainingCount() {
-        return this.cards.size();
-    }
-
     public void clear() {
-        this.cards.clear();
+        cards.clear();
     }
 
     public List<Card> getCards() {
-        return cards;
+        return Collections.unmodifiableList(cards);
     }
 }
