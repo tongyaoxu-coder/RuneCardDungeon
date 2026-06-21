@@ -10,6 +10,13 @@ public abstract class Enemy extends Actor {
 		
 	}
 	
+	public void initial() {
+		//initialize enemy, calling methods in Actor
+		super.setHp(super.getMaxHp());
+		System.out.println(this.getName()+" is coming... Hp: "+super.getHp());
+		
+	}
+	
 	public int getAttackDamage() {
 		return this.attackDamage;
 	}

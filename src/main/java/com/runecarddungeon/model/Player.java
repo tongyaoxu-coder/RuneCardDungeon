@@ -24,7 +24,7 @@ public class Player extends Actor {
 		return false;
 	}
 	
-	public void refreshEnergy() {
+	public void resetEnergy() {
 		this.energy=this.maxEnergy;
 	}
 	

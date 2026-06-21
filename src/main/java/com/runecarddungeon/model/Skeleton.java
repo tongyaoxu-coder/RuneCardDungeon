@@ -18,7 +18,7 @@ public class Skeleton extends Enemy {
 		}else if(turnCount%3==1) {
 			target.takeDamage(this.attackPower);//strike
 		}else {
-			this.gainBlock(this.shieldAmount);
+			this.addBlock(this.shieldAmount);
 		}
 		rollIntent();
 	}

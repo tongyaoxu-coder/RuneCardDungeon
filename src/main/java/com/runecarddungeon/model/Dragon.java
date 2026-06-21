@@ -13,7 +13,7 @@ public class Dragon extends Enemy{
 	public void takeTurn(Player target) {
 		switch(turnCount) {
 		case 0:
-			this.gainBlock(10);
+			this.addBlock(10);
 			break;
 		case 1:
 			this.attack(target);
