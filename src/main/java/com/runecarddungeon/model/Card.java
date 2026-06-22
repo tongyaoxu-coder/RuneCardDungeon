@@ -23,7 +23,7 @@ public class Card {
     }
 
     /*Attempts to play the card.
-     * @return true when the player has enough energy and the card is successfully played
+     *return true when the player has enough energy and the card is successfully played
      */
     public boolean play(
             Player player,
