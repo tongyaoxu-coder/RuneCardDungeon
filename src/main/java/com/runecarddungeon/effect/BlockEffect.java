@@ -21,7 +21,6 @@ public class BlockEffect implements CardEffect {
             releaser.addBlock(block);
         }
     }
-}
 
 public int getBlock() {
         return block;
