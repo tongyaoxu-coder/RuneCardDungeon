@@ -21,7 +21,6 @@ public class HealEffect implements CardEffect {
             releaser.heal(healAmount);
         }
     }
-}
 
 public int getHealAmount() {
         return healAmount;
