@@ -6,7 +6,7 @@ public abstract class Actor {
     private int maxHp;
     private int block;
     
-    // ✅ 新增：攻击力相关
+    // 新增：攻击力相关
     private int baseAttack;
     private int attackReduction;
 
@@ -44,7 +44,7 @@ public abstract class Actor {
         this.hp = Math.min(maxHp, this.hp + amount);
     }
 
-    // ===== ✅ 新增：攻击力逻辑 =====
+    // ===== 新增：攻击力逻辑 =====
     public void setBaseAttack(int attack) {
         this.baseAttack = attack;
     }
