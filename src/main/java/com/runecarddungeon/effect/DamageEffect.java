@@ -22,3 +22,8 @@ public class DamageEffect implements CardEffect {
         }
     }
 }
+
+public int getDamage() {
+        return damage;
+    }
+}
