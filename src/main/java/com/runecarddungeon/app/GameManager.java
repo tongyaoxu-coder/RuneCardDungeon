@@ -22,4 +22,3 @@ public class GameManager {
         );
     }
 }
-11
