@@ -22,3 +22,8 @@ public class HealEffect implements CardEffect {
         }
     }
 }
+
+public int getHealAmount() {
+        return healAmount;
+    }
+}
