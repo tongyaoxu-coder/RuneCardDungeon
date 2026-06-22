@@ -9,13 +9,13 @@ public class Slime extends Enemy {
 
     @Override
     public void takeTurn(Player target) {
-        System.out.println("👾 " + getName() + " Attack: Deals " + getAttackDamage() + " damage！");
+        System.out.println(getName() + " Attack: Deals " + getAttackDamage() + " damage！");
         attack(target);
         rollIntent();
     }
 
     @Override
     public void rollIntent() {
-        this.setCurrIntent("👾 Attack: Deals " + getAttackDamage() + " damage");
+        this.setCurrIntent("Attack: Deals " + getAttackDamage() + " damage");
     }
 }
