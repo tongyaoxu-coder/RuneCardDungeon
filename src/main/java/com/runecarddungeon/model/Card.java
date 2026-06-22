@@ -22,11 +22,8 @@ public class Card {
         this.description = description;
     }
 
-    /**
-     * Attempts to play the card.
-     *
-     * @return true when the player has enough energy and
-     *         the card is successfully played
+    /*Attempts to play the card.
+     * @return true when the player has enough energy and the card is successfully played
      */
     public boolean play(
             Player player,
