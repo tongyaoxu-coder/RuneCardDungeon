@@ -22,3 +22,8 @@ public class BlockEffect implements CardEffect {
         }
     }
 }
+
+public int getBlock() {
+        return block;
+    }
+}
