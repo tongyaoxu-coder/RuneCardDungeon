@@ -1,48 +1,29 @@
 package com.runecarddungeon.model;
 
-public class Dragon extends Enemy{
+public class Dragon extends Enemy {
+    private static final int SHIELD_PER_TURN = 5;
 
-	private int turnCount =0;
+    public Dragon(String name, int maxHp, int attackDamage) {
+        super(name, maxHp, attackDamage);
+        rollIntent();
+    }
 
-	public Dragon() {
-		super("Red dragon: Lavarax", 130, 20);
-		rollIntent();
-	}
-	
-	@Override
-	public void takeTurn(Player target) {
-		switch(turnCount) {
-		case 0:
-			this.addBlock(10);
-			break;
-		case 1:
-			this.attack(target);
-			break;
-		case 2:
-			break;//charging
-		case 3:
-			target.takeDamage(this.getAttackDamage()*2);
-			break;
-		}
-		turnCount= (turnCount+1)%4;
-		rollIntent();	
-	}
-	
-	@Override
-	public void rollIntent() {
-		switch(turnCount) {
-		case 0:
-			this.setCurrIntent("Dragon Aura: Shield 10");
-			break;
-		case 1:
-			this.setCurrIntent("Rend: Damage "+this.getAttackDamage());
-			break;
-		case 2:
-			this.setCurrIntent("Warning: The dragon is charging up...");//charging
-			break;
-		case 3:
-			this.setCurrIntent("Danger: Cataclysmic Breath " +(this.getAttackDamage()*2)+ "!");
-			break;
-		}
-	}
+    @Override
+    public void onTurnStart() {
+        // 龙鳞护甲：每回合获得5点护盾
+        addBlock(SHIELD_PER_TURN);
+        System.out.println(getName() + " Dragon Scale Armor activated！gain " + SHIELD_PER_TURN + " shield points！");
+    }
+
+    @Override
+    public void takeTurn(Player target) {
+        System.out.println(getName() + " Unleash a fiery breath! Deals  " + getAttackDamage() + " damage！");
+        attack(target);
+        rollIntent();
+    }
+
+    @Override
+    public void rollIntent() {
+        this.setCurrIntent("Fiery Breath: Deals " + getAttackDamage() + " damage, gain " + SHIELD_PER_TURN + " hield points");
+    }
 }
