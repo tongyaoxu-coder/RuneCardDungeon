@@ -1,5 +1,6 @@
 package com.runecarddungeon.battle;
 
+import com.runecarddungeon.data.LevelManager;
 import com.runecarddungeon.data.CardFactory;
 import com.runecarddungeon.model.Card;
 import com.runecarddungeon.model.Deck;
