@@ -100,29 +100,28 @@ public class Main extends Application {
      * a victory screen if the final level was cleared, or a next-level prompt
      * otherwise.
      */
-    private void onBattleEnd(BattleManager battleManager) {
-        BattleState state = battleManager.getState();
+private void onBattleEnd(BattleManager battleManager) {
+    BattleState state = battleManager.getState();
 
-        if (state == BattleState.DEFEAT) {
-            // Player lost -> back to menu.
-            showScene(new ResultPane("Defeat", "Back to Menu",
+    if (state == BattleState.DEFEAT) {
+        showScene(new ResultPane("Defeat", "Back to Menu",
+                this::showMainMenu), 600, 400);
+
+    } else if (state == BattleState.VICTORY) {
+        // 用 LevelManager 判断是否还有下一关
+        boolean hasNext = LevelManager.getInstance().nextLevel();
+
+        if (!hasNext) {
+            // 所有关卡通关
+            showScene(new ResultPane("Congratulations on completing all the levels！", "Back to Menu",
                     this::showMainMenu), 600, 400);
-
-        } else if (state == BattleState.VICTORY) {
-            boolean isFinalLevel = (currentLevel == levels.length - 1);
-
-            if (!hasNext) {
-                // Cleared the last level -> game won.
-                showScene(new ResultPane("Victory!", "Back to Menu",
-                        this::showMainMenu), 600, 400);
-            } else {
-                // Cleared a normal level -> continue to the next one.
-                showScene(new ResultPane("Level Clear!", "Next Level",
-                        this::goToNextLevel), 600, 400);
-            }
+        } else {
+            // 进入下一关
+            showScene(new ResultPane("Level Cleared！", "Next Level",
+                    this::goToNextLevel), 600, 400);
         }
     }
-
+}
     // Advances to the next level and starts it.
     private void goToNextLevel() {
         startLevel();
