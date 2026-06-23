@@ -80,12 +80,19 @@ private void startLevel() {
 
     // 如果是强化选择关，跳过战斗
     if (levelData.isUpgradeLevel()) {
-        System.out.println("Strengthen the Selection Process：" + levelData.getLevelName());
-        LevelManager.getInstance().nextLevel();
-        startLevel();  // 递归进入下一关
+        UpgradePane upgradePane = new UpgradePane(
+            player,
+            levelData.getLevelNumber(),
+            () -> {
+                // 强化完成后，进入下一关
+                LevelManager.getInstance().nextLevel();
+                startLevel();
+            }
+        );
+        showScene(upgradePane, 600, 400);
         return;
     }
-
+    
     Enemy enemy = (Enemy) levelData.createEnemy();
     BattleManager battleManager = new BattleManager(player, enemy);
 
