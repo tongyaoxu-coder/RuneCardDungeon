@@ -3,6 +3,11 @@ package com.runecarddungeon.model;
 public class Dragon extends Enemy {
     private static final int SHIELD_PER_TURN = 5;
 
+    public Dragon() {
+        super("Dragon", 72, 26);
+        rollIntent();
+    }
+
     public Dragon(String name, int maxHp, int attackDamage) {
         super(name, maxHp, attackDamage);
         rollIntent();
