@@ -23,15 +23,11 @@ public class BattleManager {
         this(player, enemy, CardFactory.createStarterDeck());
     }
 
-    public BattleManager(
-            Player player,
-            Enemy enemy,
-            Deck startingDeck) {
-
-        if (player == null || enemy == null || startingDeck == null) {
-            throw new IllegalArgumentException(
-                    "Player, enemy and deck cannot be null.");
-        }
+    public BattleManager(Player player, Enemy enemy) {
+    this(player, enemy, CardFactory.createDeckForLevel(
+        LevelManager.getInstance().getCurrentLevelNumber()
+    ));
+}
 
         this.player = player;
         this.enemy = enemy;
