@@ -147,13 +147,13 @@ public class BattleManager {
         drawPile.shuffle();
     }
 
-    private void updateBattleState() {
-        if (enemy.getHp() <= 0) {
-            state = BattleState.VICTORY;
-        } else if (player.getHp() <= 0) {
-            state = BattleState.DEFEAT;
-        }
+ private void updateBattleState() {
+    if (enemy.getHp() <= 0) {
+        state = BattleState.VICTORY;
+    } else if (player.getHp() <= 0) {
+        state = BattleState.DEFEAT;
     }
+}
 
     public Player getPlayer() {
         return player;
