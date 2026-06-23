@@ -2,8 +2,8 @@ package com.runecarddungeon.app;
 
 import com.runecarddungeon.battle.BattleManager;
 import com.runecarddungeon.battle.BattleState;
-import com.runecarddungeon.data.EnemyFactory;
-import com.runecarddungeon.data.EnemyFactory.EnemyType;
+import com.runecarddungeon.data.LevelData;
+import com.runecarddungeon.data.LevelManager;
 import com.runecarddungeon.model.Enemy;
 import com.runecarddungeon.model.Player;
 import com.runecarddungeon.ui.BattlePane;
@@ -22,14 +22,6 @@ import javafx.stage.Stage;
  */
 public class Main extends Application {
 
-    // The levels in order.
-    private final EnemyType[] levels = {
-        EnemyType.SLIME,
-        EnemyType.SKELETON,
-        EnemyType.DRAGON
-    };
-
-    private int currentLevel = 0;   // index of the current level (0 = first)
     private Player player;          // kept across levels so HP carries over
     private Stage stage;            // the main application window
 
@@ -57,8 +49,11 @@ public class Main extends Application {
     private void showLevelSelect() {
         LevelSelectPane selectPane = new LevelSelectPane(
             levelIndex -> {
-                currentLevel = levelIndex;
-                player = new Player("Hero", 80, 3);
+                LevelManager lm = LevelManager.getInstance();
+                for (int i = 0; i < levelIndex; i++) {
+                    lm.nextLevel();
+                }
+                player = new Player("Hero", 57, 5);
                 startLevel();
             },
             this::showMainMenu
@@ -68,15 +63,21 @@ public class Main extends Application {
 
     // Starts a new game from the first level with a fresh player.
     private void startGame() {
-        currentLevel = 0;
-        player = new Player("Hero", 80, 3);   // name, max HP, max energy
+        LevelManager.getInstance().resetToFirstLevel();
+        player = new Player("Hero", 57, 5);
         startLevel();
     }
 
     // Builds the enemy and battle logic for the current level,
     // then displays the battle screen.
     private void startLevel() {
-        Enemy enemy = EnemyFactory.createEnemy(levels[currentLevel]);
+        LevelData levelData = LevelManager.getInstance().getCurrentLevel();
+        if (levelData == null) {
+            showScene(new ResultPane("Congratulations on completing all the levels!", "Back to Menu",
+                    this::showMainMenu), 600, 400);
+            return;
+        }
+        Enemy enemy = (Enemy) levelData.createEnemy();
         BattleManager battleManager = new BattleManager(player, enemy);
 
         BattlePane battlePane = new BattlePane(
@@ -90,7 +91,7 @@ public class Main extends Application {
 
     // Restarts the current level with a fresh, full-HP player.
     private void restartLevel() {
-        player = new Player("Hero", 80, 3);
+        player = new Player("Hero", 57, 5);
         startLevel();
     }
 
@@ -110,7 +111,7 @@ public class Main extends Application {
         } else if (state == BattleState.VICTORY) {
             boolean isFinalLevel = (currentLevel == levels.length - 1);
 
-            if (isFinalLevel) {
+            if (!hasNext) {
                 // Cleared the last level -> game won.
                 showScene(new ResultPane("Victory!", "Back to Menu",
                         this::showMainMenu), 600, 400);
@@ -124,7 +125,6 @@ public class Main extends Application {
 
     // Advances to the next level and starts it.
     private void goToNextLevel() {
-        currentLevel++;
         startLevel();
     }
 
