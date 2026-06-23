@@ -1,7 +1,7 @@
 package com.runecarddungeon.battle;
 
-import com.runecarddungeon.data.LevelManager;
 import com.runecarddungeon.data.CardFactory;
+import com.runecarddungeon.data.LevelManager;
 import com.runecarddungeon.model.Card;
 import com.runecarddungeon.model.Deck;
 import com.runecarddungeon.model.Enemy;
@@ -21,14 +21,20 @@ public class BattleManager {
     private BattleState state;
 
     public BattleManager(Player player, Enemy enemy) {
-        this(player, enemy, CardFactory.createStarterDeck());
+        this(player, enemy, CardFactory.createDeckForLevel(
+            LevelManager.getInstance().getCurrentLevelNumber()
+        ));
     }
 
-    public BattleManager(Player player, Enemy enemy) {
-    this(player, enemy, CardFactory.createDeckForLevel(
-        LevelManager.getInstance().getCurrentLevelNumber()
-    ));
-}
+    public BattleManager(
+            Player player,
+            Enemy enemy,
+            Deck startingDeck) {
+
+        if (player == null || enemy == null || startingDeck == null) {
+            throw new IllegalArgumentException(
+                    "Player, enemy and deck cannot be null.");
+        }
 
         this.player = player;
         this.enemy = enemy;
@@ -45,9 +51,6 @@ public class BattleManager {
         startPlayerTurn();
     }
 
-    /**
-     * Starts a new player turn.
-     */
     public void startPlayerTurn() {
         if (state == BattleState.VICTORY
                 || state == BattleState.DEFEAT) {
@@ -62,11 +65,6 @@ public class BattleManager {
         drawCards(STARTING_HAND_SIZE);
     }
 
-    /**
-     * Draws cards from the draw pile.
-     * When the draw pile is empty, discarded cards are shuffled
-     * back into the draw pile.
-     */
     public void drawCards(int amount) {
         for (int i = 0; i < amount; i++) {
 
@@ -84,9 +82,6 @@ public class BattleManager {
         }
     }
 
-    /**
-     * Attempts to play a card from the player's hand.
-     */
     public boolean playCard(Card card) {
         if (state != BattleState.PLAYER_TURN) {
             return false;
@@ -110,9 +105,6 @@ public class BattleManager {
         return true;
     }
 
-    /**
-     * Ends the player's turn and allows the enemy to act.
-     */
     public void endPlayerTurn() {
         if (state != BattleState.PLAYER_TURN) {
             return;
@@ -144,13 +136,13 @@ public class BattleManager {
         drawPile.shuffle();
     }
 
- private void updateBattleState() {
-    if (enemy.getHp() <= 0) {
-        state = BattleState.VICTORY;
-    } else if (player.getHp() <= 0) {
-        state = BattleState.DEFEAT;
+    private void updateBattleState() {
+        if (enemy.getHp() <= 0) {
+            state = BattleState.VICTORY;
+        } else if (player.getHp() <= 0) {
+            state = BattleState.DEFEAT;
+        }
     }
-}
 
     public Player getPlayer() {
         return player;
