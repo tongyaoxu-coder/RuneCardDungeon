@@ -70,24 +70,33 @@ public class Main extends Application {
 
     // Builds the enemy and battle logic for the current level,
     // then displays the battle screen.
-    private void startLevel() {
-        LevelData levelData = LevelManager.getInstance().getCurrentLevel();
-        if (levelData == null) {
-            showScene(new ResultPane("Congratulations on completing all the levels!", "Back to Menu",
-                    this::showMainMenu), 600, 400);
-            return;
-        }
-        Enemy enemy = (Enemy) levelData.createEnemy();
-        BattleManager battleManager = new BattleManager(player, enemy);
-
-        BattlePane battlePane = new BattlePane(
-            battleManager,
-            () -> onBattleEnd(battleManager),   // when the battle ends
-            this::restartLevel,                 // when "Restart" is chosen
-            this::showMainMenu                  // when "Back to Menu" is chosen
-        );
-        showScene(battlePane, 700, 500);
+private void startLevel() {
+    LevelData levelData = LevelManager.getInstance().getCurrentLevel();
+    if (levelData == null) {
+        showScene(new ResultPane("Congratulations on completing all the levels！", "Back to Menu",
+                this::showMainMenu), 600, 400);
+        return;
     }
+
+    // 如果是强化选择关，跳过战斗
+    if (levelData.isUpgradeLevel()) {
+        System.out.println("Strengthen the Selection Process：" + levelData.getLevelName());
+        LevelManager.getInstance().nextLevel();
+        startLevel();  // 递归进入下一关
+        return;
+    }
+
+    Enemy enemy = (Enemy) levelData.createEnemy();
+    BattleManager battleManager = new BattleManager(player, enemy);
+
+    BattlePane battlePane = new BattlePane(
+        battleManager,
+        () -> onBattleEnd(battleManager),
+        this::restartLevel,
+        this::showMainMenu
+    );
+    showScene(battlePane, 700, 500);
+}
 
     // Restarts the current level with a fresh, full-HP player.
     private void restartLevel() {
