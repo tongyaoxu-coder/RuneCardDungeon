@@ -10,6 +10,7 @@ import com.runecarddungeon.ui.BattlePane;
 import com.runecarddungeon.ui.LevelSelectPane;
 import com.runecarddungeon.ui.MainMenuPane;
 import com.runecarddungeon.ui.ResultPane;
+import com.runecarddungeon.ui.UpgradePane;
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
