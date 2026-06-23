@@ -15,6 +15,8 @@ import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
  * Main entry point of the game. Launches the JavaFX window and controls the
