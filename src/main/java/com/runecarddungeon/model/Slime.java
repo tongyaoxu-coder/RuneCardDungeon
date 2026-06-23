@@ -2,6 +2,11 @@ package com.runecarddungeon.model;
 
 public class Slime extends Enemy {
 
+    public Slime() {
+        super("Slime", 8, 8);
+        rollIntent();
+    }
+
     public Slime(String name, int maxHp, int attackDamage) {
         super(name, maxHp, attackDamage);
         rollIntent();
