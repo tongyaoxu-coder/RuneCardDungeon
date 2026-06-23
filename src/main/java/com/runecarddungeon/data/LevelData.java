@@ -86,11 +86,11 @@ public enum LevelData {
     public Actor createEnemy() {
         switch (this) {
             case LEVEL_1:
-                return new Slime("史莱姆", enemyHp);
+                return new Slime("Slime", enemyHp,enemyDamage);
             case LEVEL_3:
-                return new Skeleton("骷髅战士", enemyHp);
+                return new Skeleton("Skeletin", enemyHp,enemyDamage);
             case LEVEL_5:
-                return new Dragon("红龙精英", enemyHp);
+                return new Dragon("Dragon", enemyHp,enemyDamage);
             default:
                 return null;
         }
