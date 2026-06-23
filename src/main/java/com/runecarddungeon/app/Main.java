@@ -10,10 +10,13 @@ import com.runecarddungeon.ui.BattlePane;
 import com.runecarddungeon.ui.LevelSelectPane;
 import com.runecarddungeon.ui.MainMenuPane;
 import com.runecarddungeon.ui.ResultPane;
+import com.runecarddungeon.ui.UpgradePane;
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
  * Main entry point of the game. Launches the JavaFX window and controls the
@@ -73,18 +76,17 @@ public class Main extends Application {
 private void startLevel() {
     LevelData levelData = LevelManager.getInstance().getCurrentLevel();
     if (levelData == null) {
-        showScene(new ResultPane("Congratulations on completing all the levels！", "Back to Menu",
+        showScene(new ResultPane("🏆 恭喜通关全部关卡！", "Back to Menu",
                 this::showMainMenu), 600, 400);
         return;
     }
 
-    // 如果是强化选择关，跳过战斗
+    // 强化选择关
     if (levelData.isUpgradeLevel()) {
         UpgradePane upgradePane = new UpgradePane(
             player,
             levelData.getLevelNumber(),
             () -> {
-                // 强化完成后，进入下一关
                 LevelManager.getInstance().nextLevel();
                 startLevel();
             }
@@ -92,9 +94,24 @@ private void startLevel() {
         showScene(upgradePane, 600, 400);
         return;
     }
-    
-    Enemy enemy = (Enemy) levelData.createEnemy();
-    BattleManager battleManager = new BattleManager(player, enemy);
+
+    // 创建多个敌人（根据 enemyCount）
+    List<Enemy> enemies = new ArrayList<>();
+    for (int i = 0; i < levelData.getEnemyCount(); i++) {
+        Enemy enemy = (Enemy) levelData.createEnemy();
+        if (enemy != null) {
+            enemies.add(enemy);
+        }
+    }
+
+    if (enemies.isEmpty()) {
+        // 没有敌人，直接进入下一关
+        LevelManager.getInstance().nextLevel();
+        startLevel();
+        return;
+    }
+
+    BattleManager battleManager = new BattleManager(player, enemies);
 
     BattlePane battlePane = new BattlePane(
         battleManager,
