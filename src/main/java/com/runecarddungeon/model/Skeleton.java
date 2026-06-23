@@ -1,7 +1,12 @@
-ppackage com.runecarddungeon.model;
+package com.runecarddungeon.model;
 
 public class Skeleton extends Enemy {
     private static final int SHIELD_PER_TURN = 4;
+
+    public Skeleton() {
+    super("Skeleton", 20, 12);
+    rollIntent();
+}
 
     public Skeleton(String name, int maxHp, int attackDamage) {
         super(name, maxHp, attackDamage);
