@@ -126,12 +126,6 @@ public class BattleManager {
         }
     }
 
-// ===== 新增：带动画回调的 playCard =====
-// ===== 原有 playCard（改成调用带回调的版本） =====
-public boolean playCard(Card card) {
-    return playCardWithCallback(card, null, null);
-}
-
 // ===== 带动画回调的 playCard（供 UI 层调用） =====
 public boolean playCardWithCallback(Card card, 
                                      Runnable onBeforeDamage, 
