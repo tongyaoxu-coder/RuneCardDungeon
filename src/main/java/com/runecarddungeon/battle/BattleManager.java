@@ -155,23 +155,29 @@ public class BattleManager {
     }
 
     public void endPlayerTurn() {
-        if (state != BattleState.PLAYER_TURN) {
-            return;
-        }
-
-        discardHand();
-        state = BattleState.ENEMY_TURN;
-
-        if (currentEnemy != null && currentEnemy.isAlive()) {
-            currentEnemy.takeTurn(player);
-        }
-
-        updateBattleState();
-
-        if (state == BattleState.ENEMY_TURN) {
-            startPlayerTurn();
-        }
+    if (state != BattleState.PLAYER_TURN) {
+        return;
     }
+
+    discardHand();
+    state = BattleState.ENEMY_TURN;
+
+    if (currentEnemy != null && currentEnemy.isAlive()) {
+        currentEnemy.takeTurn(player);
+
+        /*
+         * Weaken only lasts for the current enemy turn.
+         * Restore the enemy's original attack afterwards.
+         */
+        currentEnemy.resetAttackDamage();
+    }
+
+    updateBattleState();
+
+    if (state == BattleState.ENEMY_TURN) {
+        startPlayerTurn();
+    }
+}
 
     private void discardHand() {
         discardPile.addCards(hand.getCards());
