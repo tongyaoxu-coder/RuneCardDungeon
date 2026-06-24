@@ -16,8 +16,8 @@ public class BattleManager {
     private static final int STARTING_HAND_SIZE = 4;
 
     private final Player player;
-    private final List<Enemy> enemies;      
-    private Enemy currentEnemy;            
+    private final List<Enemy> enemies;
+    private Enemy currentEnemy;
     private int currentEnemyIndex;
 
     private final Deck drawPile;
@@ -56,13 +56,14 @@ public class BattleManager {
 
         this.state = BattleState.PLAYER_TURN;
 
-        System.out.println("⚔️ 当前敌人：" + currentEnemy.getName() + " (剩余 " + enemies.size() + " 个敌人)");
+        System.out.println("Current Enemy:" + currentEnemy.getName() + " (Remaining " + enemies.size() + " enemy(s))");
         startPlayerTurn();
     }
 
     public Enemy getCurrentEnemy() {
         return currentEnemy;
     }
+
     public int getRemainingEnemyCount() {
         return enemies.size();
     }
@@ -77,20 +78,17 @@ public class BattleManager {
         }
 
         if (currentEnemy != null && currentEnemy.getHp() <= 0) {
-            // 移除已击败的敌人
             enemies.remove(currentEnemy);
-            System.out.println("💀 " + currentEnemy.getName() + " 被击败！剩余 " + enemies.size() + " 个敌人");
+            System.out.println(currentEnemy.getName() + " Defeated! Remaining " + enemies.size() + " enemy(s)");
 
             if (enemies.isEmpty()) {
-                // 所有敌人都击败了
                 state = BattleState.VICTORY;
-                System.out.println("🏆 所有敌人被击败！");
+                System.out.println("All enemies have been defeated!");
                 return;
             }
 
-            // 切换到下一个敌人
             currentEnemy = enemies.get(0);
-            System.out.println("⚔️ 下一个敌人：" + currentEnemy.getName());
+            System.out.println("Next Enemy: " + currentEnemy.getName());
         }
 
         if (currentEnemy == null) {
@@ -103,7 +101,6 @@ public class BattleManager {
         player.resetBlock();
         player.resetEnergy();
 
-        // 敌人回合开始触发被动
         currentEnemy.onTurnStart();
 
         drawCards(STARTING_HAND_SIZE);
@@ -126,120 +123,77 @@ public class BattleManager {
         }
     }
 
-// ===== 带动画回调的 playCard（供 UI 层调用） =====
-public boolean playCardWithCallback(Card card, 
-                                     Runnable onBeforeDamage, 
-                                     Runnable onAfterDamage) {
-    if (state != BattleState.PLAYER_TURN) {
-        return false;
+    public boolean playCard(Card card) {
+        return playCardWithCallback(card, null, null);
     }
 
-    if (card == null || !hand.contains(card)) {
-        return false;
+    // Includes a callback for the UI layer to call
+    public boolean playCardWithCallback(Card card,
+                                         Runnable onBeforeDamage,
+                                         Runnable onAfterDamage) {
+        if (state != BattleState.PLAYER_TURN) {
+            return false;
+        }
+
+        if (card == null || !hand.contains(card)) {
+            return false;
+        }
+
+        if (currentEnemy == null) {
+            return false;
+        }
+
+        // Adjustment Before Health Point Deduction
+        if (onBeforeDamage != null) {
+            onBeforeDamage.run();
+        }
+
+        boolean playedSuccessfully = card.play(player, currentEnemy, this);
+
+        if (!playedSuccessfully) {
+            return false;
+        }
+
+        hand.removeCard(card);
+        discardPile.addCard(card);
+
+        updateBattleState();
+
+        // Debuff Reset
+        if (currentEnemy != null) {
+            currentEnemy.resetAttackDamage();
+        }
+
+        // Post-damage callback (play hit animation)
+        if (onAfterDamage != null) {
+            onAfterDamage.run();
+        }
+
+        return true;
     }
-
-    if (currentEnemy == null) {
-        return false;
-    }
-
-    // 扣血前回调（播放攻击动画）
-    if (onBeforeDamage != null) {
-        onBeforeDamage.run();
-    }
-
-    boolean playedSuccessfully = card.play(player, currentEnemy, this);
-
-    if (!playedSuccessfully) {
-        return false;
-    }
-
-    hand.removeCard(card);
-    discardPile.addCard(card);
-
-    updateBattleState();
-
-    // 削弱效果重置
-    if (currentEnemy != null) {
-        currentEnemy.resetAttackDamage();
-    }
-
-    // 扣血后回调（播放受击动画）
-    if (onAfterDamage != null) {
-        onAfterDamage.run();
-    }
-
-    return true;
-}
-    // ===== 带动画回调的 playCard =====
-// ===== 带动画回调的 playCard（供 UI 层调用） =====
-public boolean playCardWithCallback(Card card, 
-                                     Runnable onBeforeDamage, 
-                                     Runnable onAfterDamage) {
-    if (state != BattleState.PLAYER_TURN) {
-        return false;
-    }
-
-    if (card == null || !hand.contains(card)) {
-        return false;
-    }
-
-    if (currentEnemy == null) {
-        return false;
-    }
-
-    // 扣血前回调（播放攻击动画）
-    if (onBeforeDamage != null) {
-        onBeforeDamage.run();
-    }
-
-    boolean playedSuccessfully = card.play(player, currentEnemy, this);
-
-    if (!playedSuccessfully) {
-        return false;
-    }
-
-    hand.removeCard(card);
-    discardPile.addCard(card);
-
-    updateBattleState();
-
-    // 削弱效果重置
-    if (currentEnemy != null) {
-        currentEnemy.resetAttackDamage();
-    }
-
-    // 扣血后回调（播放受击动画）
-    if (onAfterDamage != null) {
-        onAfterDamage.run();
-    }
-
-    return true;
-}
 
     public void endPlayerTurn() {
-    if (state != BattleState.PLAYER_TURN) {
-        return;
+        if (state != BattleState.PLAYER_TURN) {
+            return;
+        }
+
+        discardHand();
+        state = BattleState.ENEMY_TURN;
+
+        if (currentEnemy != null && currentEnemy.isAlive()) {
+            currentEnemy.takeTurn(player);
+
+             //Weaken only lasts for the current enemy turn.
+             //Restore the enemy's original attack afterwards.
+            currentEnemy.resetAttackDamage();
+        }
+
+        updateBattleState();
+
+        if (state == BattleState.ENEMY_TURN) {
+            startPlayerTurn();
+        }
     }
-
-    discardHand();
-    state = BattleState.ENEMY_TURN;
-
-    if (currentEnemy != null && currentEnemy.isAlive()) {
-        currentEnemy.takeTurn(player);
-
-        /*
-         * Weaken only lasts for the current enemy turn.
-         * Restore the enemy's original attack afterwards.
-         */
-        currentEnemy.resetAttackDamage();
-    }
-
-    updateBattleState();
-
-    if (state == BattleState.ENEMY_TURN) {
-        startPlayerTurn();
-    }
-}
 
     private void discardHand() {
         discardPile.addCards(hand.getCards());
@@ -256,7 +210,6 @@ public boolean playCardWithCallback(Card card,
         drawPile.shuffle();
     }
 
-
     private void updateBattleState() {
         if (currentEnemy != null && currentEnemy.getHp() <= 0) {
             return;
@@ -272,14 +225,14 @@ public boolean playCardWithCallback(Card card,
         }
     }
 
-    // ===== Getters =====
+    //Getters
 
     public Player getPlayer() {
         return player;
     }
 
     public Enemy getEnemy() {
-        return currentEnemy;  // 返回当前敌人
+        return currentEnemy;
     }
 
     public List<Enemy> getAllEnemies() {
