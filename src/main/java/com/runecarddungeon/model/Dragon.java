@@ -15,7 +15,7 @@ public class Dragon extends Enemy {
 
     @Override
     public void onTurnStart() {
-        // 龙鳞护甲：每回合获得5点护盾
+        //Dragon Scale Armor: Gains 5 shield points per turn
         addBlock(SHIELD_PER_TURN);
         System.out.println(getName() + " Dragon Scale Armor activated！gain " + SHIELD_PER_TURN + " shield points！");
     }
