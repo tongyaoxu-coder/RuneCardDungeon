@@ -8,7 +8,7 @@ public class DrawCardEffect implements CardEffect {
     private final int drawAmount;
 
     public DrawCardEffect(int drawAmount) {
-        this.drawAmount = drawAmount;
+        this.drawAmount = Math.max(0, drawAmount);
     }
 
     @Override
@@ -17,8 +17,12 @@ public class DrawCardEffect implements CardEffect {
             Actor target,
             BattleManager battleManager) {
 
-        if (battleManager != null) {
+        if (battleManager != null && drawAmount > 0) {
             battleManager.drawCards(drawAmount);
         }
+    }
+
+    public int getDrawAmount() {
+        return drawAmount;
     }
 }
