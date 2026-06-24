@@ -8,7 +8,7 @@ public class DamageEffect implements CardEffect {
     private final int damage;
 
     public DamageEffect(int damage) {
-        this.damage = damage;
+        this.damage = Math.max(0, damage);
     }
 
     @Override
@@ -22,7 +22,7 @@ public class DamageEffect implements CardEffect {
         }
     }
 
-public int getDamage() {
+    public int getDamage() {
         return damage;
     }
 }
