@@ -4,35 +4,35 @@ import com.runecarddungeon.model.*;
 
 public enum LevelData {
     
-    // ===== 第1关：史莱姆之家（新手教学） =====
+    //Level 1: Slime House (Beginner's Tutorial)
     LEVEL_1(1, "Slime House",
             "The Slime Lair in the Border Forest—Defeat all the slimes！",
             "Slime", 8, 8, 4,
             "Teaching Attack, Health Regeneration, and Mana Consumption Mechanics",
             "None", "None", false),
     
-    // ===== 第2关：强化选择（无战斗） =====
+    //Level 2: Enhancement Selection (No Combat)
     LEVEL_2(2, "Enhanced Selection",
             "Choose a power-up and continue your adventure!",
             "None", 0, 0, 0,
             "Enhancement Choice: Attack Card Enhancement or +15 Max Health",
             "None", "None", false),
     
-    // ===== 第3关：骷髅堡垒 =====
+    //Level 3: Skeleton Fortress
     LEVEL_3(3, "Skeleton Fortress",
             "Skeleton warriors guard the ancient fortress, and they gain a shield every turn!",
             "Skeleton", 20, 12, 3,
             "Break the shield first, then attack; make good use of defense cards.",
             "Gain 4 shield points per turn", "None", false),
     
-    // ===== 第4关：强化选择（无战斗） =====
+    //Level 4: Enhancement Selection (No Combat)
     LEVEL_4(4, "Enhanced Selection",
             "Choose a power-up and get ready to face the boss!",
             "None", 0, 0, 0,
             "Enhanced Choice: Weaken card enhancements OR gain +1 additional mana per turn",
             "None", "None", false),
     
-    // ===== 第5关：红龙精英（Boss关） =====
+    //Level 5: Red Dragon Elite (Boss Level)
     LEVEL_5(5, "Red Dragon Elite",
             "Final Boss! Defeat the Red Dragon to beat the game!",
             "Dragon", 72, 26, 1,
@@ -82,7 +82,7 @@ public enum LevelData {
     public boolean isBoss() { return isBoss; }
     public boolean isUpgradeLevel() { return this == LEVEL_2 || this == LEVEL_4; }
 
-    // ===== 创建敌人 =====
+    // ===== Create an Enemy =====
     public Actor createEnemy() {
         switch (this) {
             case LEVEL_1:
