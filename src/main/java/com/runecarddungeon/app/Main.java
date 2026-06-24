@@ -81,7 +81,7 @@ private void startLevel() {
         return;
     }
 
-    // 强化选择关
+    // Strengthen the Selection Process
     if (levelData.isUpgradeLevel()) {
         UpgradePane upgradePane = new UpgradePane(
             player,
@@ -95,7 +95,7 @@ private void startLevel() {
         return;
     }
 
-    // 创建多个敌人（根据 enemyCount）
+    // Create multiple enemies (based on enemyCount)
     List<Enemy> enemies = new ArrayList<>();
     for (int i = 0; i < levelData.getEnemyCount(); i++) {
         Enemy enemy = (Enemy) levelData.createEnemy();
@@ -105,7 +105,7 @@ private void startLevel() {
     }
 
     if (enemies.isEmpty()) {
-        // 没有敌人，直接进入下一关
+        // No enemies—proceed directly to the next level
         LevelManager.getInstance().nextLevel();
         startLevel();
         return;
@@ -141,15 +141,15 @@ private void onBattleEnd(BattleManager battleManager) {
                 this::showMainMenu), 600, 400);
 
     } else if (state == BattleState.VICTORY) {
-        // 用 LevelManager 判断是否还有下一关
+        //Use LevelManager to determine if there is a next level
         boolean hasNext = LevelManager.getInstance().nextLevel();
 
         if (!hasNext) {
-            // 所有关卡通关
+            // All Levels Cleared
             showScene(new ResultPane("Congratulations on completing all the levels！", "Back to Menu",
                     this::showMainMenu), 600, 400);
         } else {
-            // 进入下一关
+            // Proceed to the Next Level
             showScene(new ResultPane("Level Cleared！", "Next Level",
                     this::goToNextLevel), 600, 400);
         }
