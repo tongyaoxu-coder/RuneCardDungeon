@@ -126,14 +126,16 @@ public class BattleManager {
         }
     }
 
-
-    // ===== 原有的 playCard（保留，供内部调用） =====
+// ===== 新增：带动画回调的 playCard =====
+// ===== 原有 playCard（改成调用带回调的版本） =====
 public boolean playCard(Card card) {
     return playCardWithCallback(card, null, null);
 }
 
-// ===== 新增：带动画回调的 playCard =====
-public boolean playCard(Card card) {
+// ===== 带动画回调的 playCard（供 UI 层调用） =====
+public boolean playCardWithCallback(Card card, 
+                                     Runnable onBeforeDamage, 
+                                     Runnable onAfterDamage) {
     if (state != BattleState.PLAYER_TURN) {
         return false;
     }
@@ -144,6 +146,11 @@ public boolean playCard(Card card) {
 
     if (currentEnemy == null) {
         return false;
+    }
+
+    // 扣血前回调（播放攻击动画）
+    if (onBeforeDamage != null) {
+        onBeforeDamage.run();
     }
 
     boolean playedSuccessfully = card.play(player, currentEnemy, this);
@@ -157,16 +164,18 @@ public boolean playCard(Card card) {
 
     updateBattleState();
 
-    // ✅ 加这一行：削弱效果只在当前回合有效
+    // 削弱效果重置
     if (currentEnemy != null) {
         currentEnemy.resetAttackDamage();
     }
 
-    return true;
-}
-    return true;
-}
+    // 扣血后回调（播放受击动画）
+    if (onAfterDamage != null) {
+        onAfterDamage.run();
+    }
 
+    return true;
+}
     // ===== 带动画回调的 playCard =====
 // ===== 带动画回调的 playCard（供 UI 层调用） =====
 public boolean playCardWithCallback(Card card, 
