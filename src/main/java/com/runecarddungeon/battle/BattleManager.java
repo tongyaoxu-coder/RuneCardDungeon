@@ -133,9 +133,7 @@ public boolean playCard(Card card) {
 }
 
 // ===== 新增：带动画回调的 playCard =====
-public boolean playCardWithCallback(Card card, 
-                                     Runnable onBeforeDamage, 
-                                     Runnable onAfterDamage) {
+public boolean playCard(Card card) {
     if (state != BattleState.PLAYER_TURN) {
         return false;
     }
@@ -144,22 +142,13 @@ public boolean playCardWithCallback(Card card,
         return false;
     }
 
-    // 检查蓝量
-    if (!player.spendEnergy(card.getEnergyCost())) {
+    if (currentEnemy == null) {
         return false;
     }
 
-    // ✅ 扣血前回调（播放攻击动画）
-    if (onBeforeDamage != null) {
-        onBeforeDamage.run();
-    }
-
-    // 执行卡牌效果（扣血）
-    boolean playedSuccessfully = card.play(player, enemy, this);
+    boolean playedSuccessfully = card.play(player, currentEnemy, this);
 
     if (!playedSuccessfully) {
-        // 退还蓝量
-        player.addEnergy(card.getEnergyCost());
         return false;
     }
 
@@ -167,16 +156,19 @@ public boolean playCardWithCallback(Card card,
     discardPile.addCard(card);
 
     updateBattleState();
-    
-    // ✅ 扣血后回调（播放受击动画）
-    if (onAfterDamage != null) {
-        onAfterDamage.run();
+
+    // ✅ 加这一行：削弱效果只在当前回合有效
+    if (currentEnemy != null) {
+        currentEnemy.resetAttackDamage();
     }
 
     return true;
 }
+    return true;
+}
 
     // ===== 带动画回调的 playCard =====
+// ===== 带动画回调的 playCard（供 UI 层调用） =====
 public boolean playCardWithCallback(Card card, 
                                      Runnable onBeforeDamage, 
                                      Runnable onAfterDamage) {
@@ -192,7 +184,7 @@ public boolean playCardWithCallback(Card card,
         return false;
     }
 
-    // ✅ 扣血前回调（播放攻击动画）
+    // 扣血前回调（播放攻击动画）
     if (onBeforeDamage != null) {
         onBeforeDamage.run();
     }
@@ -208,7 +200,12 @@ public boolean playCardWithCallback(Card card,
 
     updateBattleState();
 
-    // ✅ 扣血后回调（播放受击动画）
+    // 削弱效果重置
+    if (currentEnemy != null) {
+        currentEnemy.resetAttackDamage();
+    }
+
+    // 扣血后回调（播放受击动画）
     if (onAfterDamage != null) {
         onAfterDamage.run();
     }
