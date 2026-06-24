@@ -28,6 +28,11 @@ public class Deck {
         }
     }
 
+    /**
+     * Draws and removes the first card in this deck.
+     *
+     * @return the drawn card, or null if the deck is empty
+     */
     public Card drawCard() {
         if (cards.isEmpty()) {
             return null;
@@ -36,10 +41,14 @@ public class Deck {
         return cards.remove(0);
     }
 
+    /**
+     * Draws up to the requested number of cards.
+     */
     public List<Card> drawCards(int amount) {
         List<Card> drawnCards = new ArrayList<>();
+        int safeAmount = Math.max(0, amount);
 
-        for (int i = 0; i < amount; i++) {
+        for (int i = 0; i < safeAmount; i++) {
             Card card = drawCard();
 
             if (card == null) {
@@ -53,11 +62,11 @@ public class Deck {
     }
 
     public boolean removeCard(Card card) {
-        return cards.remove(card);
+        return card != null && cards.remove(card);
     }
 
     public boolean contains(Card card) {
-        return cards.contains(card);
+        return card != null && cards.contains(card);
     }
 
     public void shuffle() {
@@ -76,6 +85,9 @@ public class Deck {
         cards.clear();
     }
 
+    /**
+     * Returns a read-only view of the cards.
+     */
     public List<Card> getCards() {
         return Collections.unmodifiableList(cards);
     }
