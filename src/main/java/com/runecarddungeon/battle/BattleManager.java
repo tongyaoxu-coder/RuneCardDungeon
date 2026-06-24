@@ -167,6 +167,46 @@ public boolean playCardWithCallback(Card card,
     discardPile.addCard(card);
 
     updateBattleState();
+    
+    // ✅ 扣血后回调（播放受击动画）
+    if (onAfterDamage != null) {
+        onAfterDamage.run();
+    }
+
+    return true;
+}
+
+    // ===== 带动画回调的 playCard =====
+public boolean playCardWithCallback(Card card, 
+                                     Runnable onBeforeDamage, 
+                                     Runnable onAfterDamage) {
+    if (state != BattleState.PLAYER_TURN) {
+        return false;
+    }
+
+    if (card == null || !hand.contains(card)) {
+        return false;
+    }
+
+    if (currentEnemy == null) {
+        return false;
+    }
+
+    // ✅ 扣血前回调（播放攻击动画）
+    if (onBeforeDamage != null) {
+        onBeforeDamage.run();
+    }
+
+    boolean playedSuccessfully = card.play(player, currentEnemy, this);
+
+    if (!playedSuccessfully) {
+        return false;
+    }
+
+    hand.removeCard(card);
+    discardPile.addCard(card);
+
+    updateBattleState();
 
     // ✅ 扣血后回调（播放受击动画）
     if (onAfterDamage != null) {
