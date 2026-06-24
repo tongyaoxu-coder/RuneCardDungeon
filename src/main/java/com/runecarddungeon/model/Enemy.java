@@ -9,16 +9,16 @@ public abstract class Enemy extends Actor {
         super(name, maxHp);
         this.attackDamage = attackDamage;
         this.baseAttackDamage = attackDamage;
-        this.currIntent = "准备攻击";
+        this.currIntent = "Attack ready!";
     }
 
-    // 初始化 
+    // Initialise 
     public void initial() {
         super.setHp(super.getMaxHp());
         System.out.println(this.getName() + " is coming... Hp:" + super.getHp());
     }
 
-    // 攻击力系统 
+    // ATK
     public int getAttackDamage() {
         return this.attackDamage;
     }
@@ -28,39 +28,38 @@ public abstract class Enemy extends Actor {
         this.baseAttackDamage = attackDamage;
     }
 
-     //获取当前实际攻击力（考虑削弱效果）
+     //getter of ATK
     public int getCurrentAttackDamage() {
         return Math.max(0, attackDamage);
     }
 
-     //降低攻击力（削弱卡效果）
+     // Reduce ATK
     public void reduceAttack(int amount) {
         this.attackDamage = Math.max(0, this.attackDamage - amount);
-        System.out.println(this.getName() + " 攻击力降低 " + amount + " 点，当前攻击力：" + this.attackDamage);
+        System.out.println(this.getName() + " ATK reduce by " + amount + " Cureent ATK：" + this.attackDamage);
     }
 
-     //重置攻击力（回合结束时调用）
+     // ATK reset
     public void resetAttackDamage() {
         this.attackDamage = this.baseAttackDamage;
     }
 
-    // 行动系统
+    // Movement systemd
     public void attack(Player player) {
         if (player != null) {
             int damage = getCurrentAttackDamage();
-            System.out.println(this.getName() + " 发动攻击，造成 " + damage + " 点伤害！");
+            System.out.println(this.getName() + " Attack! " + damage + " hurt！");
             player.takeDamage(damage);
         }
     }
 
-
-     //敌人回合行动
+     // Enemy roll
     public abstract void takeTurn(Player target);
 
-     //随机生成意图
+     //generate intent randomly
     public abstract void rollIntent();
 
-    //每回合开始时的被动效果
+    //passive effect at the beginning of each round
     public void onTurnStart() {
     }
 

@@ -6,10 +6,7 @@ public class Player extends Actor {
     private int maxEnergy;
     private final Deck deck;
 
-    public Player(
-            String name,
-            int maxHp,
-            int maxEnergy) {
+    public Player(String name,int maxHp,int maxEnergy) {
 
         super(name, maxHp);
 
@@ -61,6 +58,10 @@ public class Player extends Actor {
     public void increaseMaxEnergy(int amount) {
         maxEnergy += Math.max(0, amount);
         energy = maxEnergy;
+    }
+    
+    public void increaseMaxHp(int amount) {
+    	this.setMaxHp(amount+this.getMaxHp());
     }
 
     public Deck getDeck() {

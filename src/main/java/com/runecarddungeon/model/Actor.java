@@ -5,8 +5,6 @@ public abstract class Actor {
     private int hp;
     private int maxHp;
     private int block;
-    
-    // 新增：攻击力相关
     private int baseAttack;
     private int attackReduction;
 
@@ -19,7 +17,7 @@ public abstract class Actor {
         this.attackReduction = 0;
     }
 
-    // ===== 受击逻辑 =====
+    // Take demage logic
     public void takeDamage(int dmg) {
         if (this.block >= dmg) {
             this.block -= dmg;
@@ -30,7 +28,7 @@ public abstract class Actor {
         }
     }
 
-    // ===== 护盾逻辑 =====
+    //Block effect
     public void addBlock(int amount) {
         this.block += amount;
     }
@@ -39,12 +37,12 @@ public abstract class Actor {
         this.block = 0;
     }
 
-    // ===== 治疗逻辑 =====
+    // Heal effect 
     public void heal(int amount) {
         this.hp = Math.min(maxHp, this.hp + amount);
     }
 
-    // ===== 新增：攻击力逻辑 =====
+    // ATK logic
     public void setBaseAttack(int attack) {
         this.baseAttack = attack;
     }
@@ -65,7 +63,7 @@ public abstract class Actor {
         this.baseAttack += amount;
     }
 
-    // ===== 通用方法 =====
+    // general actors attributes
     public boolean isAlive() {
         return this.hp > 0;
     }
