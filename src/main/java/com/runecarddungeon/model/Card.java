@@ -3,6 +3,9 @@ package com.runecarddungeon.model;
 import com.runecarddungeon.battle.BattleManager;
 import com.runecarddungeon.effect.CardEffect;
 
+import java.util.Collections;
+import java.util.List;
+
 public class Card {
 
     private final String name;
@@ -12,7 +15,7 @@ public class Card {
     private final String imagePath;
 
     /**
-     * Backward-compatible constructor.
+     * Backward-compatible constructor for cards without an image path.
      */
     public Card(
             String name,
@@ -20,7 +23,13 @@ public class Card {
             CardEffect effect,
             String description) {
 
-        this(name, energyCost, effect, description, "");
+        this(
+                name,
+                energyCost,
+                effect,
+                description,
+                ""
+        );
     }
 
     /**
@@ -43,6 +52,9 @@ public class Card {
     /**
      * Attempts to play this card.
      *
+     * @param player        the player using the card
+     * @param target        the target of the card
+     * @param battleManager the current battle manager
      * @return true if the card was successfully played
      */
     public boolean play(
@@ -73,8 +85,24 @@ public class Card {
         return energyCost;
     }
 
+    /**
+     * Returns the single effect used by the current card system.
+     */
     public CardEffect getEffect() {
         return effect;
+    }
+
+    /**
+     * Backward-compatible method for code that expects a list of effects.
+     *
+     * The current card design gives each card exactly one CardEffect.
+     */
+    public List<CardEffect> getEffects() {
+        if (effect == null) {
+            return Collections.emptyList();
+        }
+
+        return Collections.singletonList(effect);
     }
 
     public String getDescription() {
