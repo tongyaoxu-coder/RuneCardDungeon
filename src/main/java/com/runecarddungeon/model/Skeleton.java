@@ -15,14 +15,14 @@ public class Skeleton extends Enemy {
 
     @Override
     public void onTurnStart() {
-        // 每回合获得4点护盾
+        // Gain 4 shield points per turn
         addBlock(SHIELD_PER_TURN);
         System.out.println(getName() + " Gain  " + SHIELD_PER_TURN + " shield points！");
     }
 
     @Override
     public void takeTurn(Player target) {
-        // 每回合固定攻击
+        //Fixed Attack per Turn
         System.out.println(getName() + " Launch an attack, dealing " + getAttackDamage() + " damage！");
         attack(target);
         rollIntent();
