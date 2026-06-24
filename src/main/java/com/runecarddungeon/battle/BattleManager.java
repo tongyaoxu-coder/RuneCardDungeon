@@ -127,32 +127,54 @@ public class BattleManager {
     }
 
 
-    public boolean playCard(Card card) {
-        if (state != BattleState.PLAYER_TURN) {
-            return false;
-        }
+    // ===== 原有的 playCard（保留，供内部调用） =====
+public boolean playCard(Card card) {
+    return playCardWithCallback(card, null, null);
+}
 
-        if (card == null || !hand.contains(card)) {
-            return false;
-        }
-
-        if (currentEnemy == null) {
-            return false;
-        }
-
-        boolean playedSuccessfully =
-                card.play(player, currentEnemy, this);
-
-        if (!playedSuccessfully) {
-            return false;
-        }
-
-        hand.removeCard(card);
-        discardPile.addCard(card);
-
-        updateBattleState();
-        return true;
+// ===== 新增：带动画回调的 playCard =====
+public boolean playCardWithCallback(Card card, 
+                                     Runnable onBeforeDamage, 
+                                     Runnable onAfterDamage) {
+    if (state != BattleState.PLAYER_TURN) {
+        return false;
     }
+
+    if (card == null || !hand.contains(card)) {
+        return false;
+    }
+
+    // 检查蓝量
+    if (!player.spendEnergy(card.getEnergyCost())) {
+        return false;
+    }
+
+    // ✅ 扣血前回调（播放攻击动画）
+    if (onBeforeDamage != null) {
+        onBeforeDamage.run();
+    }
+
+    // 执行卡牌效果（扣血）
+    boolean playedSuccessfully = card.play(player, enemy, this);
+
+    if (!playedSuccessfully) {
+        // 退还蓝量
+        player.addEnergy(card.getEnergyCost());
+        return false;
+    }
+
+    hand.removeCard(card);
+    discardPile.addCard(card);
+
+    updateBattleState();
+
+    // ✅ 扣血后回调（播放受击动画）
+    if (onAfterDamage != null) {
+        onAfterDamage.run();
+    }
+
+    return true;
+}
 
     public void endPlayerTurn() {
     if (state != BattleState.PLAYER_TURN) {
