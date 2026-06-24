@@ -8,7 +8,7 @@ public class BlockEffect implements CardEffect {
     private final int block;
 
     public BlockEffect(int block) {
-        this.block = block;
+        this.block = Math.max(0, block);
     }
 
     @Override
@@ -22,7 +22,7 @@ public class BlockEffect implements CardEffect {
         }
     }
 
-public int getBlock() {
+    public int getBlock() {
         return block;
     }
 }
