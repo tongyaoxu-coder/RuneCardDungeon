@@ -3,52 +3,110 @@ package com.runecarddungeon.data;
 import com.runecarddungeon.model.Player;
 
 public class UpgradeManager {
-    private static UpgradeManager instance;
-    private boolean attackUpgraded = false;
-    private boolean maxHpUpgraded = false;
-    private boolean weakenUpgraded = false;
-    private boolean energyUpgraded = false;
 
-    private UpgradeManager() {}
+    private static UpgradeManager instance;
+
+    private boolean attackUpgraded;
+    private boolean maxHpUpgraded;
+    private boolean weakenUpgraded;
+    private boolean energyUpgraded;
+
+    private UpgradeManager() {
+        attackUpgraded = false;
+        maxHpUpgraded = false;
+        weakenUpgraded = false;
+        energyUpgraded = false;
+    }
 
     public static UpgradeManager getInstance() {
         if (instance == null) {
             instance = new UpgradeManager();
         }
+
         return instance;
     }
 
-    // ===== 第2关强化 =====
-    public void applyUpgradeLevel2(Player player, boolean chooseAttack) {
+    // Level 2 upgrade
+
+    public void applyUpgradeLevel2(
+            Player player,
+            boolean chooseAttack) {
+
+        if (player == null) {
+            return;
+        }
+
         if (chooseAttack) {
             attackUpgraded = true;
-            System.out.println("Attack Card Enhancement: Damage 8 → 12");
+
+            System.out.println(
+                    "Attack card upgraded: damage 8 -> 11."
+            );
         } else {
             maxHpUpgraded = true;
-            player.setMaxHp(player.getMaxHp() + 15);
-            player.setHp(player.getHp() + 15);
-            System.out.println("Max HP +15, Current HP: " + player.getHp());
+
+            player.setMaxHp(
+                    player.getMaxHp() + 15
+            );
+
+            player.setHp(
+                    player.getHp() + 15
+            );
+
+            System.out.println(
+                    "Maximum HP increased by 15. Current HP: "
+                            + player.getHp()
+            );
         }
     }
 
-    // ===== 第4关强化 =====
-    public void applyUpgradeLevel4(Player player, boolean chooseWeaken) {
+    // Level 4 upgrade
+
+    public void applyUpgradeLevel4(
+            Player player,
+            boolean chooseWeaken) {
+
+        if (player == null) {
+            return;
+        }
+
         if (chooseWeaken) {
             weakenUpgraded = true;
-            System.out.println("Weakened Card Buff: Effect 6 → 10");
+
+            System.out.println(
+                    "Weaken card upgraded: attack reduction 6 -> 10."
+            );
         } else {
             energyUpgraded = true;
-            player.setMaxEnergy(player.getMaxEnergy() + 1);
+
+            player.setMaxEnergy(
+                    player.getMaxEnergy() + 1
+            );
+
             player.resetEnergy();
-            System.out.println("+1 MP per turn; current maximum MP： " + player.getMaxEnergy());
+
+            System.out.println(
+                    "Maximum energy increased by 1. Current maximum energy: "
+                            + player.getMaxEnergy()
+            );
         }
     }
 
-    // ===== Getters =====
-    public boolean isAttackUpgraded() { return attackUpgraded; }
-    public boolean isMaxHpUpgraded() { return maxHpUpgraded; }
-    public boolean isWeakenUpgraded() { return weakenUpgraded; }
-    public boolean isEnergyUpgraded() { return energyUpgraded; }
+    public boolean isAttackUpgraded() {
+        return attackUpgraded;
+    }
+
+    public boolean isMaxHpUpgraded() {
+        return maxHpUpgraded;
+    }
+
+    public boolean isWeakenUpgraded() {
+        return weakenUpgraded;
+    }
+
+    public boolean isEnergyUpgraded() {
+        return energyUpgraded;
+    }
 
     public void reset() {
         attackUpgraded = false;
