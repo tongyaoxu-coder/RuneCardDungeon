@@ -8,7 +8,7 @@ public class HealEffect implements CardEffect {
     private final int healAmount;
 
     public HealEffect(int healAmount) {
-        this.healAmount = healAmount;
+        this.healAmount = Math.max(0, healAmount);
     }
 
     @Override
@@ -22,7 +22,7 @@ public class HealEffect implements CardEffect {
         }
     }
 
-public int getHealAmount() {
+    public int getHealAmount() {
         return healAmount;
     }
 }
