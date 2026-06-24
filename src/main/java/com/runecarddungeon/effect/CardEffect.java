@@ -6,11 +6,15 @@ import com.runecarddungeon.model.Actor;
 public interface CardEffect {
 
     /**
-     * Applies the card effect.
+     * Applies this card effect.
      *
-     * @param releaser     actor who plays the card
-     * @param target       target of the card
-     * @param battleManager current battle manager
+     * @param releaser      the actor who plays the card
+     * @param target        the target affected by the card
+     * @param battleManager the current battle manager
      */
-    void apply(Actor releaser, Actor target, BattleManager battleManager);
+    void apply(
+            Actor releaser,
+            Actor target,
+            BattleManager battleManager
+    );
 }
