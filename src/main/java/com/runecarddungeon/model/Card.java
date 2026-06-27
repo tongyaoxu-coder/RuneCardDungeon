@@ -45,15 +45,17 @@ public class Card {
         this.name = name == null ? "" : name;
         this.energyCost = Math.max(0, energyCost);
         this.effect = effect;
-        this.description = description == null ? "" : description;
-        this.imagePath = imagePath == null ? "" : imagePath;
+        this.description =
+                description == null ? "" : description;
+        this.imagePath =
+                imagePath == null ? "" : imagePath;
     }
 
     /**
      * Attempts to play this card.
      *
      * @param player        the player using the card
-     * @param target        the target of the card
+     * @param target        the card target
      * @param battleManager the current battle manager
      * @return true if the card was successfully played
      */
@@ -73,7 +75,12 @@ public class Card {
             return false;
         }
 
-        effect.apply(player, target, battleManager);
+        effect.apply(
+                player,
+                target,
+                battleManager
+        );
+
         return true;
     }
 
@@ -86,16 +93,17 @@ public class Card {
     }
 
     /**
-     * Returns the single effect used by the current card system.
+     * Used by BattleManager and the current single-effect card system.
      */
     public CardEffect getEffect() {
         return effect;
     }
 
     /**
-     * Backward-compatible method for code that expects a list of effects.
+     * Compatibility method for GameManager.
      *
-     * The current card design gives each card exactly one CardEffect.
+     * Each current card has exactly one effect, so this method returns
+     * a read-only list containing that effect.
      */
     public List<CardEffect> getEffects() {
         if (effect == null) {
