@@ -11,7 +11,7 @@ import javafx.scene.text.TextAlignment;
 
 public class MainMenuPane extends StackPane {
 
-    // 在类加载时注册字体，这样 CSS 的 -fx-font-family 才能引用它们
+    // Register fonts at class-load time so CSS -fx-font-family references resolve correctly
     private static final boolean FONTS_LOADED;
     // Loaded font objects — use .getFamily() in CSS so the name always matches
     private static final Font PIXEL_FONT;

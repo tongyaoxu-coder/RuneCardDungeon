@@ -30,26 +30,27 @@ public class BattlePane extends StackPane {
 
 
     // ═══════════════════════════════════════════════════════════════════════
-    //  精灵位置 & 大小 — 改完直接运行，不用 Clean
+    //  Sprite position & size — change these constants and run directly, no Clean needed.
     //
-    //  SPRITE_Y_FRAC : 精灵"脚"落在窗口高度的比例。
-    //                  0.72 = 草地中上位置（推荐），0.80 往下
-    //  KNIGHT_SIZE   : 骑士显示盒大小（px）
-    //  ENEMY_SIZE    : 敌人显示盒大小（px）
-    //  SPRITE_X_PAD  : 离左右边缘距离（px），越小越靠边
-    private static final double SPRITE_Y_FRAC = 0.72;   // 脚踩草地中央
+    //  SPRITE_Y_FRAC : The fraction of the window height where sprite "feet" land.
+    //                  0.72 = upper-middle of the grass (recommended), 0.80 = lower
+    //  KNIGHT_SIZE   : Display box size for the knight (px)
+    //  ENEMY_SIZE    : Display box size for enemies (px)
+    //  SPRITE_X_PAD  : Distance from left/right edges (px); smaller = closer to edge
+    private static final double SPRITE_Y_FRAC = 0.72;
     private static final double KNIGHT_SIZE   = 360.0;
     private static final double ENEMY_SIZE    = 460.0;
     private static final double SPRITE_X_PAD  = 80.0;
     // ═══════════════════════════════════════════════════════════════════════
 
-    // 每个精灵底部透明像素占比（脚部对齐用）
+    // Transparent bottom padding fraction per sprite (used for foot alignment).
+    // emptyFrac = transparent pixels below feet / frame height
     private static final double KNIGHT_EMPTY_FRAC = 0.26;
     private static final double SLIME_EMPTY_FRAC  = 0.44;
     private static final double SKEL_EMPTY_FRAC   = 0.33;
     private static final double WORM_EMPTY_FRAC   = 0.36;
 
-    // 精灵帧尺寸（素材实测）
+    // Sprite frame dimensions (measured from actual sprite sheets)
     private static final int KNIGHT_FW = 96,  KNIGHT_FH = 84;
     private static final int SLIME_FW  = 156, SLIME_FH  = 156;
     private static final int SKEL_FW   = 150, SKEL_FH   = 150;
@@ -140,9 +141,8 @@ public class BattlePane extends StackPane {
 
         Pane wrap = new Pane(logBox);
         wrap.setPickOnBounds(false);
-        // Anchor log box to TOP-RIGHT of the layer
         logBox.layoutXProperty().bind(wrap.widthProperty().subtract(340));
-        logBox.layoutYProperty().set(72); // below the HUD bar (~60px) + small gap
+        logBox.setLayoutY(120); // below HUD (~80px) + gap
         return wrap;
     }
 
@@ -283,11 +283,11 @@ public class BattlePane extends StackPane {
     }
 
     // ── HUD ───────────────────────────────────────────────────────────────
-    // 设计：左侧敌人信息 | 中间能量 | 右侧玩家信息
-    // 字体、血条都放大，整体高度约 80px
+    // Layout: enemy info (left) | energy (centre) | player info (right)
+    // Fonts and HP bars are enlarged; overall height is approximately 80px
 
     private HBox buildHud() {
-        // ── 暂停按钮 ──
+        // ── pause button ──
         Button pauseBtn = new Button("❚❚");
         pauseBtn.setStyle(
             "-fx-font-family:'" + CINZEL_FAM + "';" +
@@ -296,7 +296,7 @@ public class BattlePane extends StackPane {
             "-fx-padding:6 12;-fx-cursor:hand;");
         pauseBtn.setOnAction(e -> pauseLayer.setVisible(true));
 
-        // ── 敌人侧（左） ──
+        // ── enemy side (left) ──
         enemyNameLabel = lbl("", "#ff8888", 15, true);
         enemyHpBar     = fatBar("#cc2222", 200);
         enemyHpLabel   = lbl("", "#dddddd", 12, false);
@@ -312,7 +312,7 @@ public class BattlePane extends StackPane {
         enemySide.setAlignment(Pos.TOP_LEFT);
         HBox.setHgrow(enemySide, Priority.ALWAYS);
 
-        // ── 中间能量区 ──
+        // ── energy area (centre) ──
         energyLabel = lbl("", "#f5d020", 18, true);
         Label energyTitle = lbl("ENERGY", "#aaaaaa", 10, false);
         VBox mid = new VBox(2, energyTitle, energyLabel);
@@ -320,7 +320,7 @@ public class BattlePane extends StackPane {
         mid.setPadding(new Insets(0, 20, 0, 20));
         mid.setMinWidth(140);
 
-        // ── 玩家侧（右） ──
+        // ── player side (right) ──
         playerHpBar      = fatBar("#22aa55", 200);
         playerHpLabel    = lbl("", "#dddddd", 12, false);
         playerBlockLabel = lbl("", "#6699ff", 12, false);
@@ -334,7 +334,7 @@ public class BattlePane extends StackPane {
         playerSide.setAlignment(Pos.TOP_RIGHT);
         HBox.setHgrow(playerSide, Priority.ALWAYS);
 
-        // ── 组装 HUD ──
+        // ── assemble HUD ──
         HBox hud = new HBox(12, pauseBtn, enemySide, mid, playerSide);
         hud.setAlignment(Pos.CENTER_LEFT);
         hud.setPadding(new Insets(10, 16, 10, 16));
@@ -438,8 +438,17 @@ public class BattlePane extends StackPane {
     private void onEndTurn() {
         Enemy enemy = battleManager.getEnemy();
         if (enemy != null && enemy.getHp() > 0) {
-            enemySprite.playAttack();
-            knightSprite.playHurt();
+            // Enemy attacks first, then knight plays hurt once enemy is done
+            if (enemySprite instanceof SlimeAni)
+                ((SlimeAni) enemySprite).playAttack(() -> { knightSprite.playHurt(); enemySprite.playIdle(); });
+            else if (enemySprite instanceof SkeletonAni)
+                ((SkeletonAni) enemySprite).playAttack(() -> { knightSprite.playHurt(); enemySprite.playIdle(); });
+            else if (enemySprite instanceof FireWormAni)
+                ((FireWormAni) enemySprite).playAttack(() -> { knightSprite.playHurt(); enemySprite.playIdle(); });
+            else {
+                enemySprite.playAttack();
+                knightSprite.playHurt();
+            }
         }
         battleManager.endPlayerTurn();
         refresh();
@@ -475,7 +484,7 @@ public class BattlePane extends StackPane {
     private void refresh() {
         Enemy enemy = battleManager.getEnemy();
         if (enemy != null) {
-            // 根据敌人类型选图标
+            // Choose icon based on enemy type
             String icon = enemy.getName().toLowerCase().contains("skelet") ? "💀"
                         : enemy.getName().toLowerCase().contains("dragon")
                           || enemy.getName().toLowerCase().contains("worm") ? "🔥"
@@ -492,10 +501,11 @@ public class BattlePane extends StackPane {
             p.getMaxHp() > 0 ? (double) p.getHp() / p.getMaxHp() : 0);
         playerBlockLabel.setText("🛡  Block: " + p.getBlock());
 
-        int en = p.getEnergy();
+        int en  = p.getEnergy();
+        int max = p.getMaxEnergy();
         StringBuilder sb = new StringBuilder("⚡  ");
-        for (int i = 0; i < en; i++) sb.append("● ");
-        for (int i = en; i < 5; i++) sb.append("○ ");
+        for (int i = 0; i < en; i++)  sb.append("● ");
+        for (int i = en; i < max; i++) sb.append("○ ");
         energyLabel.setText(sb.toString().trim());
 
         handBox.getChildren().clear();
@@ -503,8 +513,16 @@ public class BattlePane extends StackPane {
             handBox.getChildren().add(buildCardView(card));
 
         BattleState state = battleManager.getState();
-        if (state == BattleState.VICTORY || state == BattleState.DEFEAT)
+        if (state == BattleState.VICTORY) {
+            // play death animation then transition
+            enemySprite.playDeath();
+            javafx.animation.PauseTransition delay =
+                new javafx.animation.PauseTransition(javafx.util.Duration.millis(1200));
+            delay.setOnFinished(e -> onBattleEnd.run());
+            delay.play();
+        } else if (state == BattleState.DEFEAT) {
             onBattleEnd.run();
+        }
     }
 
     // ── pause overlay ─────────────────────────────────────────────────────
@@ -541,7 +559,7 @@ public class BattlePane extends StackPane {
         return pb;
     }
 
-    // 更粗的血条，用于 HUD
+    // Thicker progress bar used in the HUD
     private ProgressBar fatBar(String accent, double width) {
         ProgressBar pb = new ProgressBar(1.0);
         pb.setPrefWidth(width);

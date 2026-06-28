@@ -35,7 +35,10 @@ public class SlimeAni extends BaseAnimationSprite {
     }
     public void playAttack(Runnable cb) {
         this.imageView.setImage(new Image(uri("assets/Slime/attack.png")));
-        playAnimation(this.attackAnim, 1, cb);
+        playAnimation(this.attackAnim, 1, () -> {
+            playIdle();
+            if (cb != null) cb.run();
+        });
     }
     public void playHurt(Runnable cb) {
         this.imageView.setImage(new Image(uri("assets/Slime/hurt.png")));

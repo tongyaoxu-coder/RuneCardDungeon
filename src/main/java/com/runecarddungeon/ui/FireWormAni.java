@@ -38,7 +38,10 @@ public class FireWormAni extends BaseAnimationSprite {
 
     public void playAttack(Runnable cb) {
         this.imageView.setImage(new Image(uri("assets/Fire_worm/Worm/Attack.png")));
-        playAnimation(this.attackAnim, 1, cb);
+        playAnimation(this.attackAnim, 1, () -> {
+            playIdle();
+            if (cb != null) cb.run();
+        });
     }
     public void playHurt(Runnable cb) {
         this.imageView.setImage(new Image(uri("assets/Fire_worm/Worm/Get Hit.png")));

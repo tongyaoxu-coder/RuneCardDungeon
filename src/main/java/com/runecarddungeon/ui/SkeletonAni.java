@@ -28,9 +28,13 @@ public class SkeletonAni extends BaseAnimationSprite {
         this.imageView.setImage(new Image(uri("assets/Skeleton/Idle.png")));
         playAnimation(this.idleAnim, ModelAnimation.INDEFINITE);
     }
-    @Override public void playAttack() {
+    @Override public void playAttack() { playAttack(null); }
+    public void playAttack(Runnable cb) {
         this.imageView.setImage(new Image(uri("assets/Skeleton/Attack.png")));
-        playAnimation(this.attackAnim, 1);
+        playAnimation(this.attackAnim, 1, () -> {
+            playIdle();
+            if (cb != null) cb.run();
+        });
     }
     @Override public void playHurt() {
         this.imageView.setImage(new Image(uri("assets/Skeleton/Take Hit.png")));

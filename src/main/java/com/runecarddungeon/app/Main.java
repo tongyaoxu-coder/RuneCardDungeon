@@ -15,7 +15,10 @@ import com.runecarddungeon.ui.UpgradePane;
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +31,7 @@ public class Main extends Application {
 
     private Player player;          // kept across levels so HP carries over
     private Stage stage;            // the main application window
+    private MediaPlayer bgMusic;    // background music (loops forever)
 
     // JavaFX entry point, called automatically when the application starts.
     @Override
@@ -48,6 +52,23 @@ public class Main extends Application {
 
         showMainMenu();
         stage.show();
+        startMusic();
+    }
+
+    // Starts the background music on a loop. Safe to call multiple times.
+    private void startMusic() {
+        if (bgMusic != null) return; // already running
+        java.io.File f = new java.io.File("assets/forest_battle_loop.mp3");
+        if (!f.exists()) return;
+        try {
+            Media media = new Media(f.toURI().toString());
+            bgMusic = new MediaPlayer(media);
+            bgMusic.setCycleCount(MediaPlayer.INDEFINITE);
+            bgMusic.setVolume(0.45);
+            bgMusic.play();
+        } catch (Exception e) {
+            System.out.println("BGM load failed: " + e.getMessage());
+        }
     }
 
     // Displays the main menu screen.
@@ -74,12 +95,14 @@ public class Main extends Application {
             levelIndex -> {
                 LevelManager lm = LevelManager.getInstance();
                 lm.resetToFirstLevel();
-                // UI card index 0→LEVEL_1, 1→LEVEL_3, 2→LEVEL_5
-                // Each battle level is separated by an upgrade level, so step = index*2
+                // Reset upgrade state so a fresh run from any point is clean
+                com.runecarddungeon.data.UpgradeManager.getInstance().reset();
+                // Battle card index → LevelData step:
+                //   index 0 (Slime)    → LEVEL_1 (0 steps)
+                //   index 1 (Skeleton) → LEVEL_3 (2 steps, skip LEVEL_2 upgrade)
+                //   index 2 (FireWorm) → LEVEL_5 (4 steps, skip both upgrades)
                 int steps = levelIndex * 2;
-                for (int i = 0; i < steps; i++) {
-                    lm.nextLevel();
-                }
+                for (int i = 0; i < steps; i++) lm.nextLevel();
                 player = new Player("Hero", 57, 5);
                 startLevel();
             },
@@ -91,6 +114,7 @@ public class Main extends Application {
     // Starts a new game from the first level with a fresh player.
     private void startGame() {
         LevelManager.getInstance().resetToFirstLevel();
+        com.runecarddungeon.data.UpgradeManager.getInstance().reset();
         player = new Player("Hero", 57, 5);
         startLevel();
     }

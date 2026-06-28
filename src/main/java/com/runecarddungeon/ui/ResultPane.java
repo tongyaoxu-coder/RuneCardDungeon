@@ -65,17 +65,19 @@ public class ResultPane extends StackPane {
         iconLabel.setStyle("-fx-font-size:80px;"
                 + "-fx-effect:dropshadow(gaussian," + glowColor + ",24,0.5,0,0);");
 
-        // ── ART-STYLE TITLE (big pixel font + double glow) ──
+        // ── ART-STYLE TITLE (big pixel font + controlled glow) ──
         Label title = new Label(titleText);
         title.setFont(Font.font(PIXEL_FAM, 40));
         title.setTextAlignment(TextAlignment.CENTER);
+        // Use a tighter glow radius so text stays legible, plus a dark shadow for contrast
         title.setStyle(
             "-fx-font-family:'" + PIXEL_FAM + "';"
             + "-fx-font-size:40px;"
             + "-fx-text-fill:" + titleColor + ";"
             + "-fx-effect:"
-            + "  dropshadow(gaussian," + glowColor + ",28,0.7,0,0),"
-            + "  dropshadow(gaussian,rgba(0,0,0,0.95),10,0.5,0,4);");
+            + "dropshadow(gaussian,rgba(0,0,0,1.0),4,0.8,0,2),"   // dark outline first
+            + "dropshadow(gaussian," + glowColor + ",12,0.5,0,0);" // then a subtle glow
+        );
 
         // ── subtitle (Cinzel italic) ──
         String subText = gameClear ? "You conquered the entire dungeon!"
