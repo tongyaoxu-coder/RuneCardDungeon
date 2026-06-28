@@ -21,7 +21,7 @@ public enum LevelData {
     //Level 3: Skeleton Fortress
     LEVEL_3(3, "Skeleton Fortress",
             "Skeleton warriors guard the ancient fortress, and they gain a shield every turn!",
-            "Skeleton", 20, 12, 1,
+            "Skeleton", 15, 7, 1,
             "Break the shield first, then attack; make good use of defense cards.",
             "Gain 4 shield points per turn", "None", false),
     
@@ -35,7 +35,7 @@ public enum LevelData {
     //Level 5: Red Dragon Elite (Boss Level)
     LEVEL_5(5, "Red Dragon Elite",
             "Final Boss! Defeat the Red Dragon to beat the game!",
-            "Dragon", 72, 26, 1,
+            "Dragon", 52, 13, 1,
             "Use a combination of the four types of cards to defeat the boss",
             "Dragon Scale Armor: Gains 5 shield points per turn", "None", true);
 
