@@ -28,6 +28,9 @@ public class KnightAni extends BaseAnimationSprite {
     
     public KnightAni() {
         super();
+        // Turn around Knight assets in X-axis
+        // so that it faces the enemy
+        this.imageView.setScaleX(-1);
         
         this.idleAnim   = new ModelAnimation(this.imageView, Duration.millis(500),  3,  32, 32);
         this.hurtAnim   = new ModelAnimation(this.imageView, Duration.millis(300),  3,  32, 32);

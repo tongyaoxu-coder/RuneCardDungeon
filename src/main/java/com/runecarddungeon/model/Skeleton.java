@@ -1,12 +1,16 @@
 package com.runecarddungeon.model;
 
 public class Skeleton extends Enemy {
-    private static final int SHIELD_PER_TURN = 4;
+    // Gain 3 shield points when defending
+    private static final int SHIELD_PER_TURN = 3;
+    
+    // Track turns for alternating behavior (Attack -> Defend)
+    private int turnCount = 0;
 
     public Skeleton() {
-    super("Skeleton", 20, 12);
-    rollIntent();
-}
+        super("Skeleton", 15, 7);
+        rollIntent();
+    }
 
     public Skeleton(String name, int maxHp, int attackDamage) {
         super(name, maxHp, attackDamage);
@@ -14,22 +18,37 @@ public class Skeleton extends Enemy {
     }
 
     @Override
-    public void onTurnStart() {
-        // Gain 4 shield points per turn
-        addBlock(SHIELD_PER_TURN);
-        System.out.println(getName() + " Gain  " + SHIELD_PER_TURN + " shield points！");
-    }
-
-    @Override
     public void takeTurn(Player target) {
-        //Fixed Attack per Turn
-        System.out.println(getName() + " Launch an attack, dealing " + getAttackDamage() + " damage！");
-        attack(target);
+    	// Skeleton behaviors logic
+        // 2 turns build a cycle
+        switch(turnCount % 2) {
+            case 0:
+                // Attack turn
+                System.out.println(getName() + " Launch an attack, dealing " + getCurrentAttackDamage() + " damage!");
+                attack(target);
+                break;
+            case 1:
+                // Defend turn
+                System.out.println(getName() + " Gain " + SHIELD_PER_TURN + " shield points!");
+                addBlock(SHIELD_PER_TURN);
+                break;
+        }
+        
+        // Proceed to next turn
+        turnCount++;
         rollIntent();
     }
 
     @Override
     public void rollIntent() {
-        this.setCurrIntent("Attack: Deals " + getAttackDamage() + " damage and grants  " + SHIELD_PER_TURN + " shield points");
+        // Generate intent based on the upcoming turn
+        switch(turnCount % 2) {
+            case 0:
+                this.setCurrIntent("Attack: Deals " + getCurrentAttackDamage() + " damage");
+                break;
+            case 1:
+                this.setCurrIntent("Defend: Grants " + SHIELD_PER_TURN + " shield points");
+                break;
+        }
     }
 }
