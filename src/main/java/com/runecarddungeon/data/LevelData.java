@@ -7,7 +7,7 @@ public enum LevelData {
     //Level 1: Slime House (Beginner's Tutorial)
     LEVEL_1(1, "Slime House",
             "The Slime Lair in the Border Forest—Defeat all the slimes！",
-            "Slime", 8, 8, 4,
+            "Slime", 8, 8, 1,
             "Teaching Attack, Health Regeneration, and Mana Consumption Mechanics",
             "None", "None", false),
     
@@ -21,7 +21,7 @@ public enum LevelData {
     //Level 3: Skeleton Fortress
     LEVEL_3(3, "Skeleton Fortress",
             "Skeleton warriors guard the ancient fortress, and they gain a shield every turn!",
-            "Skeleton", 20, 12, 3,
+            "Skeleton", 20, 12, 1,
             "Break the shield first, then attack; make good use of defense cards.",
             "Gain 4 shield points per turn", "None", false),
     
