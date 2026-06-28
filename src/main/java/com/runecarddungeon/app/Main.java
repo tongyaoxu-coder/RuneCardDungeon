@@ -10,6 +10,7 @@ import com.runecarddungeon.ui.BattlePane;
 import com.runecarddungeon.ui.LevelSelectPane;
 import com.runecarddungeon.ui.MainMenuPane;
 import com.runecarddungeon.ui.ResultPane;
+import com.runecarddungeon.ui.TutorialPane;
 import com.runecarddungeon.ui.UpgradePane;
 import javafx.application.Application;
 import javafx.scene.Parent;
@@ -33,6 +34,18 @@ public class Main extends Application {
     public void start(Stage stage) {
         this.stage = stage;
         stage.setTitle("Rune Card Dungeon");
+
+        // Create the initial scene once — we will only swap its root,
+        // never replace the Scene itself, so fullscreen is preserved.
+        stage.setScene(new Scene(new javafx.scene.layout.StackPane(), 700, 500));
+
+        // F11 or Escape toggles fullscreen
+        stage.getScene().setOnKeyPressed(e -> {
+            if (e.getCode() == javafx.scene.input.KeyCode.F11) {
+                stage.setFullScreen(!stage.isFullScreen());
+            }
+        });
+
         showMainMenu();
         stage.show();
     }
@@ -42,9 +55,16 @@ public class Main extends Application {
         MainMenuPane menu = new MainMenuPane(
             this::startGame,
             this::showLevelSelect,
+            this::showTutorial,
             () -> stage.close()
         );
-        showScene(menu, 600, 400);
+        showScene(menu, 700, 500);
+    }
+
+    // Displays the tutorial / how-to-play screen.
+    private void showTutorial() {
+        TutorialPane tutorial = new TutorialPane(this::showMainMenu);
+        showScene(tutorial, 700, 500);
     }
 
     // Displays the level select screen. Picking a level starts that single
@@ -53,7 +73,11 @@ public class Main extends Application {
         LevelSelectPane selectPane = new LevelSelectPane(
             levelIndex -> {
                 LevelManager lm = LevelManager.getInstance();
-                for (int i = 0; i < levelIndex; i++) {
+                lm.resetToFirstLevel();
+                // UI card index 0→LEVEL_1, 1→LEVEL_3, 2→LEVEL_5
+                // Each battle level is separated by an upgrade level, so step = index*2
+                int steps = levelIndex * 2;
+                for (int i = 0; i < steps; i++) {
                     lm.nextLevel();
                 }
                 player = new Player("Hero", 57, 5);
@@ -61,7 +85,7 @@ public class Main extends Application {
             },
             this::showMainMenu
         );
-        showScene(selectPane, 600, 400);
+        showScene(selectPane, 700, 500);
     }
 
     // Starts a new game from the first level with a fresh player.
@@ -76,8 +100,8 @@ public class Main extends Application {
 private void startLevel() {
     LevelData levelData = LevelManager.getInstance().getCurrentLevel();
     if (levelData == null) {
-        showScene(new ResultPane("🏆 恭喜通关全部关卡！", "Back to Menu",
-                this::showMainMenu), 600, 400);
+        showScene(new ResultPane("🏆 Congratulations! All Levels Cleared!", "Back to Menu",
+                this::showMainMenu), 700, 500);
         return;
     }
 
@@ -91,7 +115,7 @@ private void startLevel() {
                 startLevel();
             }
         );
-        showScene(upgradePane, 600, 400);
+        showScene(upgradePane, 700, 500);
         return;
     }
 
@@ -137,8 +161,8 @@ private void onBattleEnd(BattleManager battleManager) {
     BattleState state = battleManager.getState();
 
     if (state == BattleState.DEFEAT) {
-        showScene(new ResultPane("Defeat", "Back to Menu",
-                this::showMainMenu), 600, 400);
+        showScene(new ResultPane("Defeated", "Back to Menu",
+                this::showMainMenu), 700, 500);
 
     } else if (state == BattleState.VICTORY) {
         //Use LevelManager to determine if there is a next level
@@ -146,12 +170,12 @@ private void onBattleEnd(BattleManager battleManager) {
 
         if (!hasNext) {
             // All Levels Cleared
-            showScene(new ResultPane("Congratulations on completing all the levels！", "Back to Menu",
-                    this::showMainMenu), 600, 400);
+            showScene(new ResultPane("🏆 All Levels Cleared!", "Back to Menu",
+                    this::showMainMenu), 700, 500);
         } else {
             // Proceed to the Next Level
-            showScene(new ResultPane("Level Cleared！", "Next Level",
-                    this::goToNextLevel), 600, 400);
+            showScene(new ResultPane("Victory!", "Next Level",
+                    this::goToNextLevel), 700, 500);
         }
     }
 }
@@ -160,10 +184,14 @@ private void onBattleEnd(BattleManager battleManager) {
         startLevel();
     }
 
-    // Wraps a pane in a Scene and shows it on the stage.
-    // This is the single place where screen switching happens.
+    // Switches the displayed screen by replacing the Scene's root node.
+    // This preserves window size and fullscreen state — never creates a new Scene.
     private void showScene(Parent pane, double width, double height) {
-        stage.setScene(new Scene(pane, width, height));
+        if (stage.getScene() == null) {
+            stage.setScene(new Scene(pane, width, height));
+        } else {
+            stage.getScene().setRoot(pane);
+        }
     }
 
     // Java entry point that launches the JavaFX application.
