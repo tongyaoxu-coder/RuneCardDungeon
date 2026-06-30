@@ -14,9 +14,7 @@ public class Card {
     private final String description;
     private final String imagePath;
 
-    /**
-     * Backward-compatible constructor for cards without an image path.
-     */
+    // Use an empty image path for older cards
     public Card(
             String name,
             int energyCost,
@@ -32,9 +30,6 @@ public class Card {
         );
     }
 
-    /**
-     * Creates a card with an image path.
-     */
     public Card(
             String name,
             int energyCost,
@@ -51,14 +46,6 @@ public class Card {
                 imagePath == null ? "" : imagePath;
     }
 
-    /**
-     * Attempts to play this card.
-     *
-     * @param player        the player using the card
-     * @param target        the card target
-     * @param battleManager the current battle manager
-     * @return true if the card was successfully played
-     */
     public boolean play(
             Player player,
             Actor target,
@@ -92,19 +79,11 @@ public class Card {
         return energyCost;
     }
 
-    /**
-     * Used by BattleManager and the current single-effect card system.
-     */
     public CardEffect getEffect() {
         return effect;
     }
 
-    /**
-     * Compatibility method for GameManager.
-     *
-     * Each current card has exactly one effect, so this method returns
-     * a read-only list containing that effect.
-     */
+    // GameManager uses a list of effects
     public List<CardEffect> getEffects() {
         if (effect == null) {
             return Collections.emptyList();
