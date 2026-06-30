@@ -5,6 +5,7 @@ import com.runecarddungeon.model.Slime;
 import com.runecarddungeon.model.Skeleton;
 import com.runecarddungeon.model.Dragon;
 
+// Create enemies based on the selected type
 public class EnemyFactory{
 	
 	public enum EnemyType{
@@ -30,6 +31,7 @@ public class EnemyFactory{
 			throw new IllegalArgumentException("Unkown Enemy + "+type);
 		}
 		
+		// Set the default values for the enemy
 		enemy.initial();
 		
 		return enemy;
