@@ -22,28 +22,21 @@ import javafx.util.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
- * Main entry point of the game. Launches the JavaFX window and controls the
- * overall flow: switching between the menu, level select, battle, and result
- * screens, and advancing the player through the levels.
- */
+// Main class of the game
 public class Main extends Application {
 
-    private Player player;          // kept across levels so HP carries over
-    private Stage stage;            // the main application window
-    private MediaPlayer bgMusic;    // background music (loops forever)
+    private Player player; 
+    private Stage stage;
+    private MediaPlayer bgMusic;
 
-    // JavaFX entry point, called automatically when the application starts.
+    //Start the game window
     @Override
     public void start(Stage stage) {
         this.stage = stage;
         stage.setTitle("Rune Card Dungeon");
-
-        // Create the initial scene once — we will only swap its root,
-        // never replace the Scene itself, so fullscreen is preserved.
         stage.setScene(new Scene(new javafx.scene.layout.StackPane(), 700, 500));
 
-        // F11 or Escape toggles fullscreen
+        // Press F11 to switch fullscreen mode
         stage.getScene().setOnKeyPressed(e -> {
             if (e.getCode() == javafx.scene.input.KeyCode.F11) {
                 stage.setFullScreen(!stage.isFullScreen());
@@ -55,9 +48,9 @@ public class Main extends Application {
         startMusic();
     }
 
-    // Starts the background music on a loop. Safe to call multiple times.
+    // Play the background music
     private void startMusic() {
-        if (bgMusic != null) return; // already running
+        if (bgMusic != null) return; 
         java.io.File f = new java.io.File("assets/forest_battle_loop.mp3");
         if (!f.exists()) return;
         try {
@@ -71,7 +64,7 @@ public class Main extends Application {
         }
     }
 
-    // Displays the main menu screen.
+    // Show the main menu
     private void showMainMenu() {
         MainMenuPane menu = new MainMenuPane(
             this::startGame,
@@ -82,25 +75,21 @@ public class Main extends Application {
         showScene(menu, 700, 500);
     }
 
-    // Displays the tutorial / how-to-play screen.
+    // Show the tutorial page
     private void showTutorial() {
         TutorialPane tutorial = new TutorialPane(this::showMainMenu);
         showScene(tutorial, 700, 500);
     }
 
-    // Displays the level select screen. Picking a level starts that single
-    // level with a fresh, full-HP player.
+    //Show level selection
     private void showLevelSelect() {
         LevelSelectPane selectPane = new LevelSelectPane(
             levelIndex -> {
                 LevelManager lm = LevelManager.getInstance();
                 lm.resetToFirstLevel();
-                // Reset upgrade state so a fresh run from any point is clean
+                // Reset upgrades
                 com.runecarddungeon.data.UpgradeManager.getInstance().reset();
-                // Battle card index → LevelData step:
-                //   index 0 (Slime)    → LEVEL_1 (0 steps)
-                //   index 1 (Skeleton) → LEVEL_3 (2 steps, skip LEVEL_2 upgrade)
-                //   index 2 (FireWorm) → LEVEL_5 (4 steps, skip both upgrades)
+                //Move to the selected level
                 int steps = levelIndex * 2;
                 for (int i = 0; i < steps; i++) lm.nextLevel();
                 player = new Player("Hero", 57, 5);
@@ -111,7 +100,7 @@ public class Main extends Application {
         showScene(selectPane, 700, 500);
     }
 
-    // Starts a new game from the first level with a fresh player.
+    //Start a new game
     private void startGame() {
         LevelManager.getInstance().resetToFirstLevel();
         com.runecarddungeon.data.UpgradeManager.getInstance().reset();
@@ -119,8 +108,7 @@ public class Main extends Application {
         startLevel();
     }
 
-    // Builds the enemy and battle logic for the current level,
-    // then displays the battle screen.
+// Start the current level
 private void startLevel() {
     LevelData levelData = LevelManager.getInstance().getCurrentLevel();
     if (levelData == null) {
@@ -170,17 +158,13 @@ private void startLevel() {
     showScene(battlePane, 700, 500);
 }
 
-    // Restarts the current level with a fresh, full-HP player.
+    //Restart current level
     private void restartLevel() {
         player = new Player("Hero", 57, 5);
         startLevel();
     }
 
-    /*
-     * Handles the end of a battle: shows a defeat screen if the player lost,
-     * a victory screen if the final level was cleared, or a next-level prompt
-     * otherwise.
-     */
+ // Check battle result
 private void onBattleEnd(BattleManager battleManager) {
     BattleState state = battleManager.getState();
 
@@ -203,13 +187,12 @@ private void onBattleEnd(BattleManager battleManager) {
         }
     }
 }
-    // Advances to the next level and starts it.
+    //Start next level
     private void goToNextLevel() {
         startLevel();
     }
-
-    // Switches the displayed screen by replacing the Scene's root node.
-    // This preserves window size and fullscreen state — never creates a new Scene.
+    
+    // Change to another screen
     private void showScene(Parent pane, double width, double height) {
         if (stage.getScene() == null) {
             stage.setScene(new Scene(pane, width, height));
