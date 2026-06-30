@@ -19,17 +19,23 @@ public abstract class Actor {
 
     // Take demage logic
     public void takeDamage(int dmg) {
+        // if the actor has block, 
+        // consume block first
         if (this.block >= dmg) {
             this.block -= dmg;
         } else {
+            // if the attack amount exceeds block
+            // the remaining attack will consume hp
             int remainingDmg = dmg - this.block;
             this.block = 0;
+            // hp never be negative
             this.hp = Math.max(0, this.hp - remainingDmg);
         }
     }
 
     //Block effect
     public void addBlock(int amount) {
+        // block can  accumulate
         this.block += amount;
     }
 
@@ -39,10 +45,13 @@ public abstract class Actor {
 
     // Heal effect 
     public void heal(int amount) {
+        // Heal effect can increase hp
+        // But it cannot exceed maxHp in regular case
         this.hp = Math.min(maxHp, this.hp + amount);
     }
 
     // ATK logic
+    // The amount of actor makes in an single attack
     public void setBaseAttack(int attack) {
         this.baseAttack = attack;
     }
@@ -51,6 +60,7 @@ public abstract class Actor {
         return Math.max(0, baseAttack - attackReduction);
     }
 
+    // Attack can be reduce through weaken effect card
     public void reduceAttack(int amount) {
         this.attackReduction += amount;
     }
@@ -64,6 +74,7 @@ public abstract class Actor {
     }
 
     // general actors attributes
+    // Any actor with hp = 0 dies (hp never be negative)
     public boolean isAlive() {
         return this.hp > 0;
     }
