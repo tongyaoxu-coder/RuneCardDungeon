@@ -8,6 +8,7 @@ public class DrawCardEffect implements CardEffect {
     private final int drawAmount;
 
     public DrawCardEffect(int drawAmount) {
+        // Make sure the draw amount is not negative
         this.drawAmount = Math.max(0, drawAmount);
     }
 
