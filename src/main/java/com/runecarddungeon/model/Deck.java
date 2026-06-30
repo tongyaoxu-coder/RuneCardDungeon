@@ -9,10 +9,12 @@ public class Deck {
     private final List<Card> cards;
 
     public Deck() {
+        // Start with an empty deck
         this.cards = new ArrayList<>();
     }
 
     public void addCard(Card card) {
+        // Ignore null cards
         if (card != null) {
             cards.add(card);
         }
@@ -23,34 +25,31 @@ public class Deck {
             return;
         }
 
+        // Use addCard so null cards are skipped
         for (Card card : newCards) {
             addCard(card);
         }
     }
 
-    /**
-     * Draws and removes the first card in this deck.
-     *
-     * @return the drawn card, or null if the deck is empty
-     */
     public Card drawCard() {
         if (cards.isEmpty()) {
             return null;
         }
 
+        // The first card is treated as the top of the deck
         return cards.remove(0);
     }
 
-    /**
-     * Draws up to the requested number of cards.
-     */
     public List<Card> drawCards(int amount) {
         List<Card> drawnCards = new ArrayList<>();
+
+        // Prevent a negative draw amount
         int safeAmount = Math.max(0, amount);
 
         for (int i = 0; i < safeAmount; i++) {
             Card card = drawCard();
 
+            // Stop early if there are no cards left
             if (card == null) {
                 break;
             }
@@ -70,6 +69,7 @@ public class Deck {
     }
 
     public void shuffle() {
+        // Randomize the current card order
         Collections.shuffle(cards);
     }
 
@@ -85,10 +85,8 @@ public class Deck {
         cards.clear();
     }
 
-    /**
-     * Returns a read-only view of the cards.
-     */
     public List<Card> getCards() {
+        // Do not allow other classes to modify the list directly
         return Collections.unmodifiableList(cards);
     }
 }
