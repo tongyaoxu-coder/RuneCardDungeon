@@ -8,6 +8,7 @@ public class BlockEffect implements CardEffect {
     private final int block;
 
     public BlockEffect(int block) {
+        // Prevent negative block values
         this.block = Math.max(0, block);
     }
 
