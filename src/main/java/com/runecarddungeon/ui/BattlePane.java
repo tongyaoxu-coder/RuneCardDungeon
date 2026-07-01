@@ -146,11 +146,7 @@ public class BattlePane extends StackPane {
         return wrap;
     }
 
-    /**
-     * Redirects System.out so that battle messages printed by the model
-     * (Skeleton, Dragon, Player, BattleManager, etc.) also appear on screen.
-     * The original console output is preserved.
-     */
+    // hook System.out so battle messages show on screen too
     private void installLogCapture() {
         final java.io.PrintStream original = System.out;
         System.setOut(new java.io.PrintStream(original, true) {
@@ -162,7 +158,7 @@ public class BattlePane extends StackPane {
         });
     }
 
-    /** Adds a message to the on-screen log (keeps the latest 5). */
+    // add to log, max 5 messages
     private void pushLog(String msg) {
         logMessages.addLast(msg);
         while (logMessages.size() > 5) logMessages.removeFirst();
@@ -218,11 +214,7 @@ public class BattlePane extends StackPane {
         return layer;
     }
 
-    /**
-     * Builds the sprite display box using the sprite's LIVE animated ImageView.
-     * Now that frame counts/sizes are correct, the idle animation loops cleanly
-     * (one character that breathes/bobs) instead of scrolling through the sheet.
-     */
+    // sprite display box — uses live animated ImageView
     private StackPane spriteBox(BaseAnimationSprite sprite, double size) {
         int fw = getFrameW(sprite);
         int fh = getFrameH(sprite);
@@ -559,7 +551,7 @@ public class BattlePane extends StackPane {
         return pb;
     }
 
-    // Thicker progress bar used in the HUD
+    // bigger bar for HUD
     private ProgressBar fatBar(String accent, double width) {
         ProgressBar pb = new ProgressBar(1.0);
         pb.setPrefWidth(width);

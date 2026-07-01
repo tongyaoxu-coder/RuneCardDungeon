@@ -10,9 +10,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
-/**
- * ResultPane — victory / defeat / game-clear screen with art-style title.
- */
+//shows win / lose / clear screen
 public class ResultPane extends StackPane {
 
     private static final Font PIXEL;

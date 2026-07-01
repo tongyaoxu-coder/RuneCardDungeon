@@ -22,11 +22,8 @@ import javafx.util.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
- * Main entry point of the game. Launches the JavaFX window and controls the
- * overall flow: switching between the menu, level select, battle, and result
- * screens, and advancing the player through the levels.
- */
+//game entry point — handles screen switching and level flow
+
 public class Main extends Application {
 
     private Player player;          // kept across levels so HP carries over
@@ -55,7 +52,7 @@ public class Main extends Application {
         startMusic();
     }
 
-    // Starts the background music on a loop. Safe to call multiple times.
+    // Starts the BGM on a loop. To call multiple times.
     private void startMusic() {
         if (bgMusic != null) return; // already running
         java.io.File f = new java.io.File("assets/forest_battle_loop.mp3");
@@ -71,7 +68,7 @@ public class Main extends Application {
         }
     }
 
-    // Displays the main menu screen.
+    // Displays the main menu screen
     private void showMainMenu() {
         MainMenuPane menu = new MainMenuPane(
             this::startGame,
@@ -82,7 +79,7 @@ public class Main extends Application {
         showScene(menu, 700, 500);
     }
 
-    // Displays the tutorial / how-to-play screen.
+    // Displays the tutorial / how-to-play screen
     private void showTutorial() {
         TutorialPane tutorial = new TutorialPane(this::showMainMenu);
         showScene(tutorial, 700, 500);
@@ -176,11 +173,7 @@ private void startLevel() {
         startLevel();
     }
 
-    /*
-     * Handles the end of a battle: shows a defeat screen if the player lost,
-     * a victory screen if the final level was cleared, or a next-level prompt
-     * otherwise.
-     */
+ // battle over — show defeat or victory screen
 private void onBattleEnd(BattleManager battleManager) {
     BattleState state = battleManager.getState();
 
