@@ -17,6 +17,7 @@ public class Card {
     // Use an empty image path for older cards
     public Card(
             String name,
+        // Every cards need to spend certain amount of energy to play
             int energyCost,
             CardEffect effect,
             String description) {
@@ -51,13 +52,14 @@ public class Card {
             Actor target,
             BattleManager battleManager) {
 
-        if (player == null
-                || effect == null
-                || battleManager == null) {
-
+        // Check if there is a player( to play the card)
+        // The card have effect to play
+        // Battle rules manager exists
+        if (player == null || effect == null || battleManager == null) {
             return false;
         }
-
+        // Check if the player have enough energy to play the card
+        // If not, fail to play the card -> return false
         if (!player.spendEnergy(energyCost)) {
             return false;
         }
@@ -67,7 +69,6 @@ public class Card {
                 target,
                 battleManager
         );
-
         return true;
     }
 
@@ -88,7 +89,6 @@ public class Card {
         if (effect == null) {
             return Collections.emptyList();
         }
-
         return Collections.singletonList(effect);
     }
 
@@ -102,11 +102,6 @@ public class Card {
 
     @Override
     public String toString() {
-        return name
-                + " [Cost: "
-                + energyCost
-                + ", Effect: "
-                + description
-                + "]";
+        return name + " [Cost: " + energyCost + ", Effect: " + description + "]";
     }
 }
