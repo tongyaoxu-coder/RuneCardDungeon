@@ -3,7 +3,7 @@ package com.runecarddungeon.ui;
 import javafx.scene.image.Image;
 import javafx.util.Duration;
 
-// Skeleton sprite sheet: 150x150px per frame — this was already correct
+// Skeleton sprite sheet: 150*150 px
 // Idle(4) Attack(8) TakeHit(4) Shield(4) Death(4)
 public class SkeletonAni extends BaseAnimationSprite {
     private final ModelAnimation idleAnim;
@@ -14,6 +14,8 @@ public class SkeletonAni extends BaseAnimationSprite {
 
     public SkeletonAni() {
         super();
+        // parameter meaning
+        // image load; duration; frames; sizes: length * width
         this.idleAnim   = new ModelAnimation(this.imageView, Duration.millis(600),  4, 150, 150);
         this.attackAnim = new ModelAnimation(this.imageView, Duration.millis(800),  8, 150, 150);
         this.hurtAnim   = new ModelAnimation(this.imageView, Duration.millis(300),  4, 150, 150);
