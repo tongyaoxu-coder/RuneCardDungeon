@@ -79,13 +79,14 @@ public abstract class Actor {
         return this.hp > 0;
     }
 
-    // ===== Getters & Setters =====
+    // Getters for specific model class or card effect class
     public String getName() { return name; }
     public int getHp() { return hp; }
     public int getMaxHp() { return maxHp; }
     public int getBlock() { return block; }
     public int getBaseAttack() { return baseAttack; }
 
+    // setters for specific model class or card effect class
     public void setHp(int hp) {
         this.hp = Math.max(0, Math.min(maxHp, hp));
     }
