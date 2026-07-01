@@ -4,9 +4,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 
-/*
-* Fire Worm a 51x41 pixels animated scale character with 9 sheets sprites
 
+/*
+* Fire Worm (dragon) spirit sheet details
+* Fire Worm a 51x41 pixels animated scale character with 9 sheets sprites
 * Fire ball 19x11 pixels
 */
 
@@ -18,19 +19,21 @@ public class FireBallAni {
     private ModelAnimation currentAnim;
     
     public FireBallAni() {
-        this.imageView = new ImageView();
-        
-        this.moveAnim    = new ModelAnimation(this.imageView, Duration.millis(400), 6, 19, 11);
+        this.imageView = new ImageView(); 
+		// initialise fireball move animation: duration: 400ms, frames: 6, size: 19*11 (px)
+        this.moveAnim = new ModelAnimation(this.imageView, Duration.millis(400), 6, 19, 11);
+		// initialise fireball explode animation: duration: 500ms, frames: 7, size: 19*11 (px)
         this.explodeAnim = new ModelAnimation(this.imageView, Duration.millis(500), 7, 19, 11);
     }
     
     public void playMove() {
+		// load asset
         this.imageView.setImage(new Image("file:assets/Fire_worm/Fire Ball/Move.png"));
         if(currentAnim != null) {
             currentAnim.stop();
         }
         currentAnim = moveAnim;
-        // Keep showing the animation during flight
+        // The fireball should keep flying until it hit the target
         currentAnim.setCycleCount(ModelAnimation.INDEFINITE);
         currentAnim.setOnFinished(null); // Clear any previous callbacks
         currentAnim.play();
@@ -39,21 +42,23 @@ public class FireBallAni {
     public void playExplode() {
         this.playExplode(null);
     }
-
-    /**
-     * Plays the explosion animation with a specific callback.
-     * onExplodeFinished the logic executed after the explosion ends
-     */
+	
+	// Plays the explosion animation with a specific callback.
+    // onExplodeFinished: the logic executed after the explosion ends
     public void playExplode(Runnable onExplodeFinished) {
+		// load asset
         this.imageView.setImage(new Image("file:assets/Fire_worm/Fire Ball/Explosion.png"));
         if(currentAnim != null) {
             currentAnim.stop();
         }
         currentAnim = explodeAnim;
+		// explode 1 time only
         currentAnim.setCycleCount(1);
-        
+        // Check if any certaim play logic is introduced
+		// e.g. onExplodeFinished contain logic: play explosion animation first, then reduce target's hp
+		// e.g. onExplodeFinished=null: target has block, simply play the animation without reduce hp.
         if (onExplodeFinished != null) {
-            currentAnim.setOnFinished(e -> onExplodeFinished.run());
+            currentAnim.setOnFinished(e->onExplodeFinished.run());
         } else {
             currentAnim.setOnFinished(null);
         }
