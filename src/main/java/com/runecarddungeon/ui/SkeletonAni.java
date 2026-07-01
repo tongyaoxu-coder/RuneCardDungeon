@@ -16,11 +16,11 @@ public class SkeletonAni extends BaseAnimationSprite {
         super();
         // parameter meaning
         // image load; duration; frames; sizes: length * width
-        this.idleAnim   = new ModelAnimation(this.imageView, Duration.millis(600),  4, 150, 150);
-        this.attackAnim = new ModelAnimation(this.imageView, Duration.millis(800),  8, 150, 150);
-        this.hurtAnim   = new ModelAnimation(this.imageView, Duration.millis(300),  4, 150, 150);
-        this.shieldAnim = new ModelAnimation(this.imageView, Duration.millis(600),  4, 150, 150);
-        this.deathAnim  = new ModelAnimation(this.imageView, Duration.millis(800),  4, 150, 150);
+        this.idleAnim = new ModelAnimation(this.imageView, Duration.millis(600), 4, 150, 150);
+        this.attackAnim = new ModelAnimation(this.imageView, Duration.millis(800), 8, 150, 150);
+        this.hurtAnim = new ModelAnimation(this.imageView, Duration.millis(300), 4, 150, 150);
+        this.shieldAnim = new ModelAnimation(this.imageView, Duration.millis(600), 4, 150, 150);
+        this.deathAnim = new ModelAnimation(this.imageView, Duration.millis(800), 4, 150, 150);
         playIdle();
     }
 
