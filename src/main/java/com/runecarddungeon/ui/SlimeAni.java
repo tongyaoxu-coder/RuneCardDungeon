@@ -3,7 +3,7 @@ package com.runecarddungeon.ui;
 import javafx.scene.image.Image;
 import javafx.util.Duration;
 
-// Slime sprite sheet: each frame is 156x156px
+// Slime sprite sheet: each frame is 156*156px
 // idle(14) attack(19) hurt(3) death(11)
 public class SlimeAni extends BaseAnimationSprite {
     private final ModelAnimation idleAnim;
@@ -13,23 +13,28 @@ public class SlimeAni extends BaseAnimationSprite {
 
     public SlimeAni() {
         super();
-        // FIXED: frame size is 156x156, not 44x18
-        this.idleAnim   = new ModelAnimation(this.imageView, Duration.millis(1000), 14, 156, 156);
-        this.attackAnim = new ModelAnimation(this.imageView, Duration.millis(800),  19, 156, 156);
-        this.hurtAnim   = new ModelAnimation(this.imageView, Duration.millis(300),   3, 156, 156);
-        this.deathAnim  = new ModelAnimation(this.imageView, Duration.millis(1200), 11, 156, 156);
+        // parameter meaning
+        // image load; duration; frames; sizes: length* width
+        this.idleAnim = new ModelAnimation(this.imageView, Duration.millis(1000),14, 156, 156);
+        this.attackAnim = new ModelAnimation(this.imageView, Duration.millis(800),19, 156, 156);
+        this.hurtAnim = new ModelAnimation(this.imageView, Duration.millis(300), 3, 156, 156);
+        this.deathAnim = new ModelAnimation(this.imageView, Duration.millis(1200),11, 156, 156);
         playIdle();
     }
 
     private static String uri(String p) { return new java.io.File(p).toURI().toString(); }
 
-    @Override public void playIdle() {
+    @Override 
+    public void playIdle() {
         this.imageView.setImage(new Image(uri("assets/Slime/idle.png")));
         playAnimation(this.idleAnim, ModelAnimation.INDEFINITE);
     }
-    @Override public void playAttack() { playAttack(null); }
-    @Override public void playHurt()   { playHurt(() -> playIdle()); }
-    @Override public void playDeath() {
+    @Override 
+    public void playAttack() { playAttack(null); }
+    @Override 
+    public void playHurt()   { playHurt(() -> playIdle()); }
+    @Override 
+    public void playDeath() {
         this.imageView.setImage(new Image(uri("assets/Slime/death.png")));
         playAnimation(this.deathAnim, 1);
     }
