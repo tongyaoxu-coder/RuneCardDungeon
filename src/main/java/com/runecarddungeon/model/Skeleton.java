@@ -1,9 +1,8 @@
 package com.runecarddungeon.model;
 
 public class Skeleton extends Enemy {
-    // Gain 3 shield points when defending
+    // Gain 3 shield points when addBlock() is called
     private static final int SHIELD_PER_TURN = 3;
-    
     // Track turns for alternating behavior (Attack -> Defend)
     private int turnCount = 0;
 
@@ -17,6 +16,7 @@ public class Skeleton extends Enemy {
         rollIntent();
     }
 
+    // Skeleton behaviors
     @Override
     public void takeTurn(Player target) {
     	// Skeleton behaviors logic
@@ -42,6 +42,7 @@ public class Skeleton extends Enemy {
     @Override
     public void rollIntent() {
         // Generate intent based on the upcoming turn
+        // For ui referring
         switch(turnCount % 2) {
             case 0:
                 this.setCurrIntent("Attack: Deals " + getCurrentAttackDamage() + " damage");
