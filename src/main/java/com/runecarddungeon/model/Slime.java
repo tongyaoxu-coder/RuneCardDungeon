@@ -3,6 +3,7 @@ package com.runecarddungeon.model;
 public class Slime extends Enemy {
 
     public Slime() {
+        // name: Slime, maxHp: 8, attack power: 8
         super("Slime", 8, 8);
         rollIntent();
     }
@@ -12,6 +13,8 @@ public class Slime extends Enemy {
         rollIntent();
     }
 
+    // Slime behavior
+    // Slime attack the player every turns, dont have complex intent
     @Override
     public void takeTurn(Player target) {
         System.out.println(getName() + " Attack: Deals " + getAttackDamage() + " damage！");
