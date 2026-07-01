@@ -16,8 +16,8 @@ public class ModelAnimation extends Transition {
     public ModelAnimation(ImageView imageView, Duration duration, int count, int width, int height) {
         this.imageView = imageView;
         this.count = count;
-        this.width = width;
-        this.height = height;
+        this.width = width; // px
+        this.height = height; // px
         setCycleDuration(duration);
         setInterpolator(Interpolator.LINEAR);
     }
@@ -26,12 +26,13 @@ public class ModelAnimation extends Transition {
     protected void interpolate(double frac) {
         final int index = Math.min((int) Math.floor(frac * count), count - 1);
         if (index != lastIndex) {
+            // set the image view accordingly
             imageView.setViewport(new Rectangle2D(index * width, 0, width, height));
             lastIndex = index;
         }
     }
 
-    /** Immediately show frame 0 — prevents the full sheet from flashing. */
+    // Immediately show frame 0 — prevents the full sheet from flashing. 
     public void applyFirstFrame() {
         imageView.setViewport(new Rectangle2D(0, 0, width, height));
         lastIndex = 0;
