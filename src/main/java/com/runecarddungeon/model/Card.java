@@ -14,11 +14,10 @@ public class Card {
     private final String description;
     private final String imagePath;
 
-    /**
-     * Backward-compatible constructor for cards without an image path.
-     */
+    // Use an empty image path for older cards
     public Card(
             String name,
+        // Every cards need to spend certain amount of energy to play
             int energyCost,
             CardEffect effect,
             String description) {
@@ -32,9 +31,6 @@ public class Card {
         );
     }
 
-    /**
-     * Creates a card with an image path.
-     */
     public Card(
             String name,
             int energyCost,
@@ -51,26 +47,19 @@ public class Card {
                 imagePath == null ? "" : imagePath;
     }
 
-    /**
-     * Attempts to play this card.
-     *
-     * @param player        the player using the card
-     * @param target        the card target
-     * @param battleManager the current battle manager
-     * @return true if the card was successfully played
-     */
     public boolean play(
             Player player,
             Actor target,
             BattleManager battleManager) {
 
-        if (player == null
-                || effect == null
-                || battleManager == null) {
-
+        // Check if there is a player( to play the card)
+        // The card have effect to play
+        // Battle rules manager exists
+        if (player == null || effect == null || battleManager == null) {
             return false;
         }
-
+        // Check if the player have enough energy to play the card
+        // If not, fail to play the card -> return false
         if (!player.spendEnergy(energyCost)) {
             return false;
         }
@@ -80,7 +69,6 @@ public class Card {
                 target,
                 battleManager
         );
-
         return true;
     }
 
@@ -92,24 +80,15 @@ public class Card {
         return energyCost;
     }
 
-    /**
-     * Used by BattleManager and the current single-effect card system.
-     */
     public CardEffect getEffect() {
         return effect;
     }
 
-    /**
-     * Compatibility method for GameManager.
-     *
-     * Each current card has exactly one effect, so this method returns
-     * a read-only list containing that effect.
-     */
+    // GameManager uses a list of effects
     public List<CardEffect> getEffects() {
         if (effect == null) {
             return Collections.emptyList();
         }
-
         return Collections.singletonList(effect);
     }
 
@@ -123,11 +102,6 @@ public class Card {
 
     @Override
     public String toString() {
-        return name
-                + " [Cost: "
-                + energyCost
-                + ", Effect: "
-                + description
-                + "]";
+        return name + " [Cost: " + energyCost + ", Effect: " + description + "]";
     }
 }

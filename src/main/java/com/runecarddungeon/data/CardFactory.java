@@ -10,27 +10,23 @@ import com.runecarddungeon.model.Deck;
 
 public final class CardFactory {
 
-    //Card energy costs
-
+    // Energy costs for each card type
     private static final int ATTACK_COST = 3;
     private static final int HEAL_COST = 2;
     private static final int SHIELD_COST = 3;
     private static final int WEAKEN_COST = 2;
 
-    //Base card values
-
+    // Default card values
     private static final int ATTACK_DAMAGE = 8;
     private static final int HEAL_AMOUNT = 8;
     private static final int SHIELD_AMOUNT = 6;
     private static final int WEAKEN_AMOUNT = 6;
 
-    //Upgraded card values
-
+    // Values used after an upgrade
     private static final int UPGRADED_ATTACK_DAMAGE = 11;
     private static final int UPGRADED_WEAKEN_AMOUNT = 10;
 
-    //Card image paths
-
+    // Image locations for the card display
     private static final String ATTACK_IMAGE_PATH =
             "assets/cards/attack.png";
 
@@ -50,13 +46,10 @@ public final class CardFactory {
             "assets/cards/curse_upgraded.png";
 
     private CardFactory() {
-        // Prevent this utility class from being instantiated.
+        // This class only contains static factory methods
     }
 
-
-    // Individual card creation
-
-
+    // Create the basic attack card
     public static Card createAttackCard() {
         return new Card(
                 "Attack",
@@ -67,6 +60,7 @@ public final class CardFactory {
         );
     }
 
+    // Create the stronger version of the attack card
     public static Card createAttackCardUpgraded() {
         return new Card(
                 "Attack+",
@@ -97,9 +91,7 @@ public final class CardFactory {
         );
     }
 
-    /**
-     * Alias for code that refers to this card as a shield card.
-     */
+    // Kept as another name for the defense card
     public static Card createShieldCard() {
         return createDefenseCard();
     }
@@ -128,9 +120,7 @@ public final class CardFactory {
         );
     }
 
-    /**
-     * This card is currently not used in the official level decks.
-     */
+    // This card is available but is not currently used in level decks
     public static Card createDrawCard() {
         return new Card(
                 "Insight",
@@ -140,18 +130,10 @@ public final class CardFactory {
         );
     }
 
-
-    // Starter deck
-
-
-    /**
-     * Level 1 deck:
-     * Attack x1
-     * Heal x1
-     */
     public static Deck createStarterDeck() {
         Deck deck = new Deck();
 
+        // The starter deck contains one attack and one heal card
         deck.addCard(createAttackCard());
         deck.addCard(createHealCard());
 
@@ -159,30 +141,9 @@ public final class CardFactory {
         return deck;
     }
 
-
-    // Level deck creation
-
-
-    /**
-     * Creates the deck for the requested level.
-     *
-     * Level 1:
-     * Attack x1, Heal x1
-     *
-     * Level 2:
-     * Upgrade selection only
-     *
-     * Level 3:
-     * Attack x2, Heal x2, Shield x2
-     *
-     * Level 4:
-     * Upgrade selection only
-     *
-     * Level 5:
-     * Attack x2, Heal x2, Shield x2, Weaken x2
-     */
     public static Deck createDeckForLevel(int levelNumber) {
 
+        // Check whether any cards have already been upgraded
         UpgradeManager upgradeManager =
                 UpgradeManager.getInstance();
 
@@ -196,10 +157,11 @@ public final class CardFactory {
                 break;
 
             case 2:
-                // Upgrade selection level. No battle deck is required.
+                // Level 2 is only used for choosing an upgrade
                 return deck;
 
             case 3:
+                // Add two copies of each available card
                 for (int i = 0; i < 2; i++) {
 
                     Card attackCard =
@@ -214,10 +176,11 @@ public final class CardFactory {
                 break;
 
             case 4:
-                // Upgrade selection level. No battle deck is required.
+                // Level 4 is also an upgrade selection level
                 return deck;
 
             case 5:
+                // Add the full set of cards for the final battle
                 for (int i = 0; i < 2; i++) {
 
                     Card attackCard =
@@ -238,6 +201,7 @@ public final class CardFactory {
                 break;
 
             default:
+                // Use the starter deck if the level number is invalid
                 System.out.println(
                         "Unknown level number: "
                                 + levelNumber
@@ -247,6 +211,7 @@ public final class CardFactory {
                 return createStarterDeck();
         }
 
+        // Shuffle before the deck is used in battle
         deck.shuffle();
         return deck;
     }

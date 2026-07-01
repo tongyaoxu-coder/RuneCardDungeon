@@ -8,6 +8,7 @@ public class WeakenEffect implements CardEffect {
     private final int reductionAmount;
 
     public WeakenEffect(int reductionAmount) {
+        // Make sure the reduction amount is not negative
         this.reductionAmount = Math.max(0, reductionAmount);
     }
 

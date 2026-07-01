@@ -4,35 +4,35 @@ import com.runecarddungeon.model.*;
 
 public enum LevelData {
     
-    //Level 1: Slime House (Beginner's Tutorial)
+    //Level 1: Slime
     LEVEL_1(1, "Slime House",
             "The Slime Lair in the Border Forest—Defeat all the slimes！",
             "Slime", 8, 8, 1,
             "Teaching Attack, Health Regeneration, and Mana Consumption Mechanics",
             "None", "None", false),
     
-    //Level 2: Enhancement Selection (No Combat)
+    //Level 2: Enhancement Selection
     LEVEL_2(2, "Enhanced Selection",
             "Choose a power-up and continue your adventure!",
             "None", 0, 0, 0,
             "Enhancement Choice: Attack Card Enhancement or +15 Max Health",
             "None", "None", false),
     
-    //Level 3: Skeleton Fortress
+    //Level 3: Skeleton
     LEVEL_3(3, "Skeleton Fortress",
             "Skeleton warriors guard the ancient fortress, and they gain a shield every turn!",
             "Skeleton", 15, 7, 1,
             "Break the shield first, then attack; make good use of defense cards.",
             "Gain 4 shield points per turn", "None", false),
     
-    //Level 4: Enhancement Selection (No Combat)
+    //Level 4: Enhancement Selection
     LEVEL_4(4, "Enhanced Selection",
             "Choose a power-up and get ready to face the boss!",
             "None", 0, 0, 0,
             "Enhanced Choice: Weaken card enhancements OR gain +1 additional mana per turn",
             "None", "None", false),
     
-    //Level 5: Red Dragon Elite (Boss Level)
+    //Level 5:Boss Level
     LEVEL_5(5, "Red Dragon Elite",
             "Final Boss! Defeat the Red Dragon to beat the game!",
             "Dragon", 52, 13, 1,
@@ -68,7 +68,6 @@ public enum LevelData {
         this.isBoss = isBoss;
     }
 
-    // ===== Getters =====
     public int getLevelNumber() { return levelNumber; }
     public String getLevelName() { return levelName; }
     public String getLore() { return lore; }
@@ -82,7 +81,7 @@ public enum LevelData {
     public boolean isBoss() { return isBoss; }
     public boolean isUpgradeLevel() { return this == LEVEL_2 || this == LEVEL_4; }
 
-    // ===== Create an Enemy =====
+    // Create the enemy for this level
     public Actor createEnemy() {
         switch (this) {
             case LEVEL_1:

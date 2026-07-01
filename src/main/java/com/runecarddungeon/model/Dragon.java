@@ -1,7 +1,7 @@
 package com.runecarddungeon.model;
 
 public class Dragon extends Enemy{
-	 // Gain 7 shield points per turn
+	 // Fixed shield amount for addBlock() calling 
     private static final int SHIELD_PER_TURN = 7;
 	private int turnCount =0;
 	
@@ -17,6 +17,8 @@ public class Dragon extends Enemy{
 	}
 	
 	// dragon strike atk
+	// The stirke increase dragon's current attack by 10
+	// use getter in case that weaken card effect reduce dragon's atk
 	private int getStrikeDamage() {
         return this.getCurrentAttackDamage() + 10;
     }
@@ -43,12 +45,14 @@ public class Dragon extends Enemy{
 			break;
 		case 4:
 			// fifth turn rest after strike
+			// A weak stage after strike, considering the balance of game
 			break;
 		}
 		turnCount= (turnCount+1)%5;
 		rollIntent();	
 	}
-	
+
+	// provide a terminal output, build an adaption for ui prompting
 	@Override
 	public void rollIntent() {
 		switch(turnCount) {

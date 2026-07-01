@@ -8,6 +8,7 @@ public class DamageEffect implements CardEffect {
     private final int damage;
 
     public DamageEffect(int damage) {
+        // Make sure damage is not negative
         this.damage = Math.max(0, damage);
     }
 

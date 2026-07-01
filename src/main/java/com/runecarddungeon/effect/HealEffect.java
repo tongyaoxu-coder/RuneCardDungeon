@@ -8,6 +8,7 @@ public class HealEffect implements CardEffect {
     private final int healAmount;
 
     public HealEffect(int healAmount) {
+        // Make sure the heal amount is not negative
         this.healAmount = Math.max(0, healAmount);
     }
 

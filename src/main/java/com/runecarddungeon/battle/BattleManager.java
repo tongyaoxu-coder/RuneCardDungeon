@@ -1,5 +1,4 @@
 package com.runecarddungeon.battle;
-
 import com.runecarddungeon.data.CardFactory;
 import com.runecarddungeon.data.LevelData;
 import com.runecarddungeon.data.LevelManager;
@@ -7,114 +6,115 @@ import com.runecarddungeon.model.Card;
 import com.runecarddungeon.model.Deck;
 import com.runecarddungeon.model.Enemy;
 import com.runecarddungeon.model.Player;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class BattleManager {
-
+    
     private static final int STARTING_HAND_SIZE = 4;
-
+    
     private final Player player;
     private final List<Enemy> enemies;
     private Enemy currentEnemy;
     private int currentEnemyIndex;
-
+    
     private final Deck drawPile;
     private final Deck hand;
     private final Deck discardPile;
-
+    
     private BattleState state;
-
+    
     public BattleManager(Player player, List<Enemy> enemies) {
         this(player, enemies, CardFactory.createDeckForLevel(
             LevelManager.getInstance().getCurrentLevelNumber()
         ));
     }
-
+    
     public BattleManager(
             Player player,
             List<Enemy> enemies,
             Deck startingDeck) {
-
+        
         if (player == null || enemies == null || enemies.isEmpty() || startingDeck == null) {
             throw new IllegalArgumentException(
                     "Player, enemies (non-empty) and deck cannot be null.");
         }
-
+        
         this.player = player;
         this.enemies = new ArrayList<>(enemies);
         this.currentEnemyIndex = 0;
         this.currentEnemy = this.enemies.get(0);
-
         this.drawPile = new Deck();
         this.hand = new Deck();
         this.discardPile = new Deck();
-
+        
         this.drawPile.addCards(startingDeck.getCards());
         this.drawPile.shuffle();
-
         this.state = BattleState.PLAYER_TURN;
-
+        
         System.out.println("Current Enemy:" + currentEnemy.getName() + " (Remaining " + enemies.size() + " enemy(s))");
         startPlayerTurn();
     }
-
+    
     public Enemy getCurrentEnemy() {
         return currentEnemy;
     }
-
+    
     public int getRemainingEnemyCount() {
         return enemies.size();
     }
-
+    
     public boolean isAllEnemiesDefeated() {
         return enemies.isEmpty();
     }
-
+    
     public void startPlayerTurn() {
+        // Skip if battle already ended
         if (state == BattleState.VICTORY || state == BattleState.DEFEAT) {
             return;
         }
-
+        
+        // Remove defeated enemy
         if (currentEnemy != null && currentEnemy.getHp() <= 0) {
             enemies.remove(currentEnemy);
             System.out.println(currentEnemy.getName() + " Defeated! Remaining " + enemies.size() + " enemy(s)");
-
+            
             if (enemies.isEmpty()) {
                 state = BattleState.VICTORY;
                 System.out.println("All enemies have been defeated!");
                 return;
             }
-
+            
             currentEnemy = enemies.get(0);
             System.out.println("Next Enemy: " + currentEnemy.getName());
         }
-
+        
         if (currentEnemy == null) {
             state = BattleState.VICTORY;
             return;
         }
-
+        
         state = BattleState.PLAYER_TURN;
-
+        
+        // Prepare player's new turn
         player.resetBlock();
         player.resetEnergy();
-
+        
         currentEnemy.onTurnStart();
-
+        
+        // Draw a new hand
         drawCards(STARTING_HAND_SIZE);
     }
-
+    
     public void drawCards(int amount) {
         for (int i = 0; i < amount; i++) {
-
+            // Refill draw pile if needed
             if (drawPile.isEmpty()) {
                 recycleDiscardPile();
             }
-
+            
             Card drawnCard = drawPile.drawCard();
-
+            // No cards left
             if (drawnCard == null) {
                 break;
             }
@@ -134,16 +134,13 @@ public class BattleManager {
         if (state != BattleState.PLAYER_TURN) {
             return false;
         }
-
         if (card == null || !hand.contains(card)) {
             return false;
         }
-
         if (currentEnemy == null) {
             return false;
         }
-
-        // Adjustment Before Health Point Deduction
+        // Update UI before damage
         if (onBeforeDamage != null) {
             onBeforeDamage.run();
         }
@@ -159,12 +156,12 @@ public class BattleManager {
 
         updateBattleState();
 
-        // Debuff Reset
+        // Restore enemy attack if changed
         if (currentEnemy != null) {
             currentEnemy.resetAttackDamage();
         }
 
-        // Post-damage callback (play hit animation)
+        //Play hit animation
         if (onAfterDamage != null) {
             onAfterDamage.run();
         }
@@ -176,57 +173,53 @@ public class BattleManager {
         if (state != BattleState.PLAYER_TURN) {
             return;
         }
-
+        
         discardHand();
         state = BattleState.ENEMY_TURN;
-
+        
         if (currentEnemy != null && currentEnemy.isAlive()) {
             currentEnemy.takeTurn(player);
-
-             //Weaken only lasts for the current enemy turn.
-             //Restore the enemy's original attack afterwards.
+             //Remove temporary weaken effect
             currentEnemy.resetAttackDamage();
         }
 
         updateBattleState();
-
+        
         if (state == BattleState.ENEMY_TURN) {
             startPlayerTurn();
         }
-    }
-
+        
     private void discardHand() {
         discardPile.addCards(hand.getCards());
         hand.clear();
     }
-
+        // Shuffle discarded cards back into the deck
     private void recycleDiscardPile() {
         if (discardPile.isEmpty()) {
             return;
         }
-
         drawPile.addCards(discardPile.getCards());
         discardPile.clear();
         drawPile.shuffle();
     }
-
+        
     private void updateBattleState() {
+        // Wait until next turn to switch enemy
         if (currentEnemy != null && currentEnemy.getHp() <= 0) {
             return;
         }
-
+        
         if (enemies.isEmpty()) {
             state = BattleState.VICTORY;
             return;
         }
-
+        // Player loses
         if (player.getHp() <= 0) {
             state = BattleState.DEFEAT;
         }
     }
 
-    //Getters
-
+    // Getter methods
     public Player getPlayer() {
         return player;
     }
